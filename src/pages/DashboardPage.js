@@ -34,6 +34,7 @@ export default function DashboardPage() {
   <div className="navbar-content">
     <h1>Rentflow</h1>
     <div className="navbar-links">
+      <Link to="/messages" className="nav-link">Messages</Link>
       <Link to="/payment" className="nav-link">Billing</Link>
       {isAdmin && <Link to="/admin" className="nav-link">Admin</Link>}
       <button onClick={handleLogout} className="btn btn-secondary">Sign Out</button>
