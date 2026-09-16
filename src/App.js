@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import PaymentPage from './pages/PaymentPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import CommunicationCenterPage from './pages/CommunicationCenterPage';
+import PropertiesPage from './pages/PropertiesPage';
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.REACT_APP_SUPABASE_ANON_KEY
@@ -40,6 +41,7 @@ function App() {
        <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/login" />} />
         <Route path="/admin" element={user ? <AdminDashboardPage /> : <Navigate to="/login" />} />
         <Route path="/messages" element={user ? <CommunicationCenterPage /> : <Navigate to="/login" />} />
+        <Route path="/properties" element={user ? <PropertiesPage /> : <Navigate to="/login" />} />
         <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
       </Routes>
     </Router>

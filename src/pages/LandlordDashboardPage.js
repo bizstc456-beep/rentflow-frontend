@@ -16,6 +16,7 @@ function formatMoney(cents) {
 export default function LandlordDashboardPage() {
   const [summary, setSummary] = useState(null);
   const [properties, setProperties] = useState([]);
+  const [renewalsSoon, setRenewalsSoon] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -43,6 +44,7 @@ export default function LandlordDashboardPage() {
 
       setSummary(data.summary);
       setProperties(data.properties || []);
+      setRenewalsSoon(data.renewals_soon || []);
     } catch (err) {
       console.error('Error loading dashboard:', err);
       setError('Could not load your dashboard. Please try again shortly.');
@@ -60,6 +62,7 @@ export default function LandlordDashboardPage() {
   }
 
   const hasPending = summary.pending_amount > 0;
+  const hasRenewals = renewalsSoon.length > 0;
   const monthLabel = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
@@ -87,24 +90,49 @@ export default function LandlordDashboardPage() {
         </div>
       )}
 
-      <h2 className="rf-section-title">Your properties</h2>
+      {hasRenewals && (
+        <div className="rf-banner">
+          <div>
+            <div className="rf-banner-title">
+              {renewalsSoon.length === 1 ? 'A lease ends' : `${renewalsSoon.length} leases end`} within 90 days
+            </div>
+            <div className="rf-banner-sub">
+              {renewalsSoon.map((t) => t.name).join(', ')} &mdash; Quebec's TAL notice window is open, so send any
+              rent-increase or non-renewal notice now.
+            </div>
+          </div>
+          <Link to="/properties" className="rf-banner-btn">Go to Properties</Link>
+        </div>
+      )}
+
+      <div className="rf-page-header-row">
+        <h2 className="rf-section-title" style={{ margin: 0 }}>Your properties</h2>
+        <Link to="/properties" className="rf-btn rf-btn-secondary">Manage properties</Link>
+      </div>
 
       {properties.length === 0 ? (
-        <p className="rf-empty">You haven't added any properties yet. Property management tools are coming soon.</p>
+        <p className="rf-empty">
+          You haven't added any properties yet. <Link to="/properties">Add your first property</Link> to get started.
+        </p>
       ) : (
         <div className="rf-plist">
-          {properties.map((p) => (
-            <div className="rf-prow" key={p.id}>
-              <div>
-                <div className="rf-prow-addr">{p.address}</div>
-                <div className="rf-prow-city">{p.city}</div>
+          {properties.map((p) => {
+            const unitCount = (p.tenants || []).length;
+            return (
+              <div className="rf-prow" key={p.id}>
+                <div>
+                  <div className="rf-prow-addr">{p.address}</div>
+                  <div className="rf-prow-city">
+                    {p.city}{unitCount ? ` · ${unitCount} unit${unitCount === 1 ? '' : 's'}` : ''}
+                  </div>
+                </div>
+                <div className="rf-prow-rent">{formatMoney(p.collected_this_month + p.pending_amount)}/mo</div>
+                <span className={`rf-dot-status ${p.status === 'paid' ? 'good' : 'warn'}`}>
+                  {p.status === 'paid' ? 'Paid' : `${formatMoney(p.pending_amount)} pending`}
+                </span>
               </div>
-              <div className="rf-prow-rent">{formatMoney(p.rent_amount)}/mo</div>
-              <span className={`rf-dot-status ${p.status === 'paid' ? 'good' : 'warn'}`}>
-                {p.status === 'paid' ? 'Paid' : `${formatMoney(p.pending_amount)} pending`}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

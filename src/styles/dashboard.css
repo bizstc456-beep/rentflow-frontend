@@ -648,3 +648,150 @@
     padding: 22px 18px 40px;
   }
 }
+
+/* ---- properties page ---- */
+.rf-page-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.rf-page-header-row .rf-page-header {
+  margin-bottom: 0;
+}
+
+.rf-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.rf-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.rf-property-card {
+  border: 1px solid var(--rf-line);
+  border-radius: 14px;
+  background: var(--rf-card);
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.rf-property-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rf-property-head h3 {
+  font-family: "Outfit", sans-serif;
+  font-size: 16.5px;
+  font-weight: 700;
+  margin: 0 0 3px;
+}
+
+.rf-property-head .rf-prow-city {
+  margin: 0;
+}
+
+.rf-property-meta {
+  font-size: 12.5px;
+  color: var(--rf-ink2);
+  margin-top: 6px;
+}
+
+.rf-property-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.rf-property-notes {
+  font-size: 13px;
+  color: var(--rf-ink2);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rf-line);
+}
+
+.rf-unit-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rf-unit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border: 1px solid var(--rf-line);
+  border-radius: 10px;
+  background: var(--rf-bg);
+}
+
+.rf-unit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 160px;
+}
+
+.rf-unit-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+.rf-unit-sub {
+  font-size: 12px;
+  color: var(--rf-ink2);
+}
+
+.rf-unit-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+  background: var(--rf-warn-soft);
+  color: var(--rf-warn);
+  white-space: nowrap;
+}
+
+.rf-unit-rent {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rf-unit-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rf-nested-card {
+  border: 1px dashed var(--rf-line);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+  background: var(--rf-accent-soft);
+}
