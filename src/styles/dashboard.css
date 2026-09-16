@@ -1,0 +1,284 @@
+/* ============================================
+   Rentflow dashboard design system (v1)
+   Applied so far to: the landlord dashboard.
+   Not yet applied to: Admin, Messages, Billing (see App.css) --
+   those get the same tokens in a follow-up pass.
+   ============================================ */
+
+.rf-shell {
+  --rf-bg: #fcfbfc;
+  --rf-card: #ffffff;
+  --rf-line: #eae7ec;
+  --rf-ink: #1a1620;
+  --rf-ink2: #726d79;
+  --rf-accent: #8b3a62;
+  --rf-accent-soft: #f8ecf2;
+  --rf-good: #1b8a5a;
+  --rf-good-soft: #e7f5ee;
+  --rf-warn: #b5790a;
+  --rf-warn-soft: #faf1de;
+
+  display: flex;
+  min-height: 100vh;
+  background: var(--rf-bg);
+  color: var(--rf-ink);
+  font-family: "Public Sans", system-ui, sans-serif;
+}
+
+.rf-side {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--rf-line);
+  padding: 26px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.rf-brand {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 28px;
+  padding: 0 10px;
+}
+
+.rf-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rf-nav-link {
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: var(--rf-ink2);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.rf-nav-link.current {
+  background: var(--rf-accent-soft);
+  color: var(--rf-accent);
+}
+
+.rf-signout {
+  margin-top: auto;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--rf-line);
+  background: transparent;
+  color: var(--rf-ink2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+}
+
+.rf-signout:hover {
+  border-color: var(--rf-ink2);
+  color: var(--rf-ink);
+}
+
+.rf-main {
+  flex: 1;
+  min-width: 0;
+  padding: 30px 32px 48px;
+  max-width: 880px;
+}
+
+.rf-state {
+  padding: 60px 32px;
+  color: var(--rf-ink2);
+  font-family: "Public Sans", sans-serif;
+}
+
+.rf-dash .rf-greet {
+  font-size: 12.5px;
+  color: var(--rf-ink2);
+  margin: 0 0 4px;
+}
+
+.rf-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+
+.rf-hero-num {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rf-hero-label {
+  font-size: 13px;
+  color: var(--rf-ink2);
+}
+
+.rf-chips {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.rf-chip {
+  border: 1px solid var(--rf-line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.rf-chip b {
+  font-family: "Outfit", sans-serif;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rf-chip span {
+  color: var(--rf-ink2);
+}
+
+.rf-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  background: var(--rf-warn-soft);
+  border: 1px solid rgba(181, 121, 10, 0.25);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.rf-banner-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--rf-ink);
+}
+
+.rf-banner-sub {
+  font-size: 12.5px;
+  color: var(--rf-ink2);
+  margin-top: 2px;
+}
+
+.rf-banner-btn {
+  background: var(--rf-warn);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.rf-section-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  font-family: "Outfit", sans-serif;
+  margin: 0 0 12px;
+}
+
+.rf-empty {
+  font-size: 13.5px;
+  color: var(--rf-ink2);
+}
+
+.rf-plist {
+  border-top: 1px solid var(--rf-line);
+}
+
+.rf-prow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 2px;
+  border-bottom: 1px solid var(--rf-line);
+  flex-wrap: wrap;
+}
+
+.rf-prow-addr {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rf-prow-city {
+  font-size: 12.5px;
+  color: var(--rf-ink2);
+  margin-top: 2px;
+}
+
+.rf-prow-rent {
+  font-family: "Outfit", sans-serif;
+  font-weight: 600;
+  font-size: 14.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rf-dot-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.rf-dot-status.good {
+  color: var(--rf-good);
+}
+
+.rf-dot-status.warn {
+  color: var(--rf-warn);
+}
+
+.rf-dot-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+@media (max-width: 640px) {
+  .rf-shell {
+    flex-direction: column;
+  }
+  .rf-side {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+    border-right: none;
+    border-bottom: 1px solid var(--rf-line);
+    padding: 14px 16px;
+  }
+  .rf-brand {
+    margin-bottom: 0;
+    padding: 0;
+  }
+  .rf-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .rf-signout {
+    margin-top: 0;
+    margin-left: auto;
+  }
+  .rf-main {
+    padding: 22px 18px 40px;
+  }
+}
