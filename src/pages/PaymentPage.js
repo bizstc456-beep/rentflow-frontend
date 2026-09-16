@@ -70,6 +70,7 @@ export default function PaymentPage() {
       <div className="payment-header">
         <h1>Rentflow Pricing</h1>
         <p>Simple, transparent pricing for landlords</p>
+        {user && <p className="payment-user">Signed in as {user.email}</p>}
       </div>
 
       {/* Pricing Card */}

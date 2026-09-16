@@ -29,16 +29,19 @@ export default function AdminDashboardPage() {
       const { data: properties, error: propsError } = await supabase
         .from('properties')
         .select('*');
-      
+      if (propsError) console.error('Error loading properties:', propsError);
+
       // Get tenants
       const { data: tenants, error: tenantsError } = await supabase
         .from('tenants')
         .select('*');
-      
+      if (tenantsError) console.error('Error loading tenants:', tenantsError);
+
       // Get payments
       const { data: payments, error: paymentsError } = await supabase
         .from('payments')
         .select('*');
+      if (paymentsError) console.error('Error loading payments:', paymentsError);
 
       setStats({
         totalUsers: authUsers?.length || 0,
