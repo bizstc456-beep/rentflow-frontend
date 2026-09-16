@@ -53,10 +53,14 @@ export default function PaymentPage() {
         }
       );
 
-      const { sessionId } = await response.json();
+      const data = await response.json();
 
-      // Redirect to Stripe
-      window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
+      if (!response.ok || !data.url) {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+
+      // Redirect to Stripe's hosted checkout page
+      window.location.href = data.url;
     } catch (error) {
       console.error('Checkout error:', error);
       alert('Failed to start checkout. Please try again.');
@@ -84,6 +88,7 @@ export default function PaymentPage() {
         </div>
 
         <div className="trial-badge">30-Day Free Trial</div>
+        <p className="trial-note">Card required to start your trial — you won't be charged for 30 days.</p>
 
         <div className="features-list">
           <div className="feature">✅ Unlimited properties</div>
@@ -114,7 +119,7 @@ export default function PaymentPage() {
         )}
 
         <div className="pricing-footer">
-          <p>No credit card required for trial</p>
+          <p>Cancelling before day 30 means you're never charged</p>
           <p>Cancel anytime</p>
         </div>
       </div>
@@ -124,7 +129,7 @@ export default function PaymentPage() {
         <h2>Common Questions</h2>
         <div className="faq-item">
           <h3>Do I need a credit card for the trial?</h3>
-          <p>No. You can try Rentflow free for 30 days without providing payment information.</p>
+          <p>Yes, we collect your card when you start the trial, but you won't be charged anything for 30 days. Cancel anytime before then and you won't be billed.</p>
         </div>
         <div className="faq-item">
           <h3>Can I cancel my subscription?</h3>
