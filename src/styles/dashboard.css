@@ -253,6 +253,372 @@
   background: currentColor;
 }
 
+/* ---- shared page chrome (Admin / Messages / Billing) ---- */
+
+.rf-page-header {
+  margin-bottom: 26px;
+}
+
+.rf-page-header h1 {
+  font-family: "Outfit", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.rf-page-header p {
+  font-size: 13.5px;
+  color: var(--rf-ink2);
+  margin: 0;
+}
+
+.rf-card {
+  border: 1px solid var(--rf-line);
+  border-radius: 14px;
+  padding: 20px;
+  background: var(--rf-card);
+  margin-bottom: 28px;
+}
+
+/* stat grid (Admin) */
+.rf-statgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.rf-statcard {
+  border: 1px solid var(--rf-line);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--rf-card);
+}
+
+.rf-statcard .k {
+  font-size: 12px;
+  color: var(--rf-ink2);
+  margin-bottom: 8px;
+}
+
+.rf-statcard .v {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* generic data table */
+.rf-table-wrap {
+  border: 1px solid var(--rf-line);
+  border-radius: 12px;
+  overflow: hidden;
+  overflow-x: auto;
+}
+
+.rf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.rf-table th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--rf-ink2);
+  font-weight: 600;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid var(--rf-line);
+  white-space: nowrap;
+}
+
+.rf-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--rf-line);
+}
+
+.rf-table tr:last-child td {
+  border-bottom: none;
+}
+
+.rf-table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+/* badges */
+.rf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.rf-badge.good {
+  background: var(--rf-good-soft);
+  color: var(--rf-good);
+}
+
+.rf-badge.warn {
+  background: var(--rf-warn-soft);
+  color: var(--rf-warn);
+}
+
+.rf-badge.neutral {
+  background: var(--rf-accent-soft);
+  color: var(--rf-accent);
+}
+
+/* forms */
+.rf-field {
+  margin-bottom: 16px;
+}
+
+.rf-field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--rf-ink);
+  margin-bottom: 6px;
+}
+
+.rf-input,
+.rf-select,
+.rf-textarea {
+  width: 100%;
+  font: inherit;
+  font-size: 13.5px;
+  padding: 10px 12px;
+  border: 1px solid var(--rf-line);
+  border-radius: 9px;
+  background: var(--rf-card);
+  color: var(--rf-ink);
+}
+
+.rf-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.rf-input:focus,
+.rf-select:focus,
+.rf-textarea:focus {
+  outline: 2px solid var(--rf-accent);
+  outline-offset: 1px;
+}
+
+/* buttons */
+.rf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.rf-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.rf-btn-primary {
+  background: var(--rf-accent);
+  color: #fff;
+}
+
+.rf-btn-secondary {
+  background: transparent;
+  color: var(--rf-ink);
+  border: 1px solid var(--rf-line);
+}
+
+.rf-btn-block {
+  width: 100%;
+}
+
+/* alerts */
+.rf-alert {
+  background: var(--rf-warn-soft);
+  border: 1px solid rgba(181, 121, 10, 0.3);
+  color: #7a5a1a;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  margin-bottom: 16px;
+}
+
+.rf-success-text {
+  font-size: 13px;
+  color: var(--rf-good);
+  margin: 0 0 12px;
+}
+
+/* ---- pricing / billing page ---- */
+.rf-pricing-wrap {
+  max-width: 640px;
+  padding-bottom: 20px;
+}
+
+.rf-pricing-header {
+  margin-bottom: 30px;
+}
+
+.rf-pricing-header h1 {
+  font-family: "Outfit", sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.rf-pricing-header p {
+  font-size: 14px;
+  color: var(--rf-ink2);
+  margin: 0;
+}
+
+.rf-pricing-user {
+  font-size: 12.5px;
+  color: var(--rf-ink2);
+  margin-top: 8px;
+}
+
+.rf-price-card {
+  border: 1px solid var(--rf-line);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 30px;
+  background: var(--rf-card);
+}
+
+.rf-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rf-price-row h2 {
+  font-family: "Outfit", sans-serif;
+  font-size: 18px;
+  margin: 0;
+}
+
+.rf-price-amount {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+}
+
+.rf-price-amount .period {
+  font-family: "Public Sans", sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--rf-ink2);
+}
+
+.rf-trial-badge {
+  display: inline-block;
+  background: var(--rf-accent-soft);
+  color: var(--rf-accent);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 8px;
+}
+
+.rf-trial-note {
+  font-size: 12.5px;
+  color: var(--rf-ink2);
+  margin: 0 0 20px;
+}
+
+.rf-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rf-line);
+}
+
+.rf-feature {
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rf-feature::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rf-good);
+  flex-shrink: 0;
+}
+
+.rf-price-footer {
+  font-size: 12px;
+  color: var(--rf-ink2);
+  margin-top: 14px;
+}
+
+.rf-price-footer p {
+  margin: 3px 0;
+}
+
+.rf-subscription-active {
+  border-top: 1px solid var(--rf-line);
+  padding-top: 16px;
+}
+
+.rf-subscription-active .rf-badge {
+  margin-bottom: 10px;
+}
+
+.rf-faq h2 {
+  font-family: "Outfit", sans-serif;
+  font-size: 16px;
+  margin: 0 0 14px;
+}
+
+.rf-faq-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rf-line);
+}
+
+.rf-faq-item:last-child {
+  border-bottom: none;
+}
+
+.rf-faq-item h3 {
+  font-size: 13.5px;
+  margin: 0 0 5px;
+}
+
+.rf-faq-item p {
+  font-size: 13px;
+  color: var(--rf-ink2);
+  margin: 0;
+  line-height: 1.5;
+}
+
 @media (max-width: 640px) {
   .rf-shell {
     flex-direction: column;

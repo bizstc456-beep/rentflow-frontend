@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import AppShell from '../components/AppShell';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -70,76 +71,73 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="payment-container">
-      <div className="payment-header">
-        <h1>Rentflow Pricing</h1>
-        <p>Simple, transparent pricing for landlords</p>
-        {user && <p className="payment-user">Signed in as {user.email}</p>}
-      </div>
+    <AppShell active="billing">
+      <div className="rf-pricing-wrap">
+        <div className="rf-pricing-header">
+          <h1>Rentflow Pricing</h1>
+          <p>Simple, transparent pricing for landlords</p>
+          {user && <p className="rf-pricing-user">Signed in as {user.email}</p>}
+        </div>
 
-      {/* Pricing Card */}
-      <div className="pricing-card">
-        <div className="pricing-header">
-          <h2>Pro Plan</h2>
-          <div className="price">
-            <span className="amount">$150</span>
-            <span className="period">/month</span>
+        <div className="rf-price-card">
+          <div className="rf-price-row">
+            <h2>Pro Plan</h2>
+            <div className="rf-price-amount">$150<span className="period">/month</span></div>
           </div>
-        </div>
 
-        <div className="trial-badge">30-Day Free Trial</div>
-        <p className="trial-note">Card required to start your trial — you won't be charged for 30 days.</p>
+          <div className="rf-trial-badge">30-Day Free Trial</div>
+          <p className="rf-trial-note">Card required to start your trial — you won't be charged for 30 days.</p>
 
-        <div className="features-list">
-          <div className="feature">✅ Unlimited properties</div>
-          <div className="feature">✅ Unlimited tenants</div>
-          <div className="feature">✅ Payment tracking</div>
-          <div className="feature">✅ SMS notifications</div>
-          <div className="feature">✅ Document storage</div>
-          <div className="feature">✅ AI-powered tenant analysis</div>
-          <div className="feature">✅ Priority support</div>
-        </div>
+          <div className="rf-feature-list">
+            <div className="rf-feature">Unlimited properties</div>
+            <div className="rf-feature">Unlimited tenants</div>
+            <div className="rf-feature">Payment tracking</div>
+            <div className="rf-feature">SMS notifications</div>
+            <div className="rf-feature">Document storage</div>
+            <div className="rf-feature">AI-powered tenant analysis</div>
+            <div className="rf-feature">Priority support</div>
+          </div>
 
-        {subscription ? (
-          <div className="subscription-status active">
-            <div className="status-badge">✓ Active Subscription</div>
-            <p>Next billing date: {new Date(subscription.next_billing_date).toLocaleDateString()}</p>
-            <button className="btn btn-secondary" disabled>
-              Already Subscribed
+          {subscription ? (
+            <div className="rf-subscription-active">
+              <span className="rf-badge good">Active subscription</span>
+              <p className="rf-trial-note">Next billing date: {new Date(subscription.next_billing_date).toLocaleDateString()}</p>
+              <button className="rf-btn rf-btn-secondary rf-btn-block" disabled>
+                Already subscribed
+              </button>
+            </div>
+          ) : (
+            <button
+              className="rf-btn rf-btn-primary rf-btn-block"
+              onClick={handleCheckout}
+              disabled={loading}
+            >
+              {loading ? 'Processing...' : 'Start 30-Day Free Trial'}
             </button>
+          )}
+
+          <div className="rf-price-footer">
+            <p>Cancelling before day 30 means you're never charged</p>
+            <p>Cancel anytime</p>
           </div>
-        ) : (
-          <button
-            className="btn btn-primary btn-large"
-            onClick={handleCheckout}
-            disabled={loading}
-          >
-            {loading ? 'Processing...' : 'Start 30-Day Free Trial'}
-          </button>
-        )}
+        </div>
 
-        <div className="pricing-footer">
-          <p>Cancelling before day 30 means you're never charged</p>
-          <p>Cancel anytime</p>
+        <div className="rf-faq">
+          <h2>Common questions</h2>
+          <div className="rf-faq-item">
+            <h3>Do I need a credit card for the trial?</h3>
+            <p>Yes, we collect your card when you start the trial, but you won't be charged anything for 30 days. Cancel anytime before then and you won't be billed.</p>
+          </div>
+          <div className="rf-faq-item">
+            <h3>Can I cancel my subscription?</h3>
+            <p>Yes, you can cancel anytime. Your access continues until the end of your billing period.</p>
+          </div>
+          <div className="rf-faq-item">
+            <h3>What payment methods do you accept?</h3>
+            <p>We accept all major credit and debit cards via Stripe.</p>
+          </div>
         </div>
       </div>
-
-      {/* FAQ */}
-      <div className="payment-faq">
-        <h2>Common Questions</h2>
-        <div className="faq-item">
-          <h3>Do I need a credit card for the trial?</h3>
-          <p>Yes, we collect your card when you start the trial, but you won't be charged anything for 30 days. Cancel anytime before then and you won't be billed.</p>
-        </div>
-        <div className="faq-item">
-          <h3>Can I cancel my subscription?</h3>
-          <p>Yes, you can cancel anytime. Your access continues until the end of your billing period.</p>
-        </div>
-        <div className="faq-item">
-          <h3>What payment methods do you accept?</h3>
-          <p>We accept all major credit and debit cards via Stripe.</p>
-        </div>
-      </div>
-    </div>
+    </AppShell>
   );
 }

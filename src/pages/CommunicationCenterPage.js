@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import AppShell from '../components/AppShell';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -105,31 +106,40 @@ export default function CommunicationCenterPage() {
   };
 
   if (loading) {
-    return <div className="admin-container"><p>Loading your messages...</p></div>;
+    return (
+      <AppShell active="messages">
+        <div className="rf-state"><p>Loading your messages...</p></div>
+      </AppShell>
+    );
   }
 
   if (error) {
-    return <div className="admin-container"><p>{error}</p></div>;
+    return (
+      <AppShell active="messages">
+        <div className="rf-state"><p>{error}</p></div>
+      </AppShell>
+    );
   }
 
   return (
-    <div className="admin-container">
-      <div className="admin-header">
+    <AppShell active="messages">
+      <div className="rf-page-header">
         <h1>Communication Center</h1>
         <p>Send SMS to your tenants and see your message history</p>
       </div>
 
-      <div className="users-section">
-        <h2>Send a Message</h2>
+      <div className="rf-card">
+        <h2 className="rf-section-title">Send a message</h2>
         {tenants.length === 0 ? (
-          <p>You don't have any tenants yet, so there's no one to message. Add a tenant first.</p>
+          <p className="rf-empty">You don't have any tenants yet, so there's no one to message. Add a tenant first.</p>
         ) : (
           <form onSubmit={handleSend}>
-            {sendError && <div className="error-alert">{sendError}</div>}
-            {sendSuccess && <p>{sendSuccess}</p>}
-            <div className="form-group">
+            {sendError && <div className="rf-alert">{sendError}</div>}
+            {sendSuccess && <p className="rf-success-text">{sendSuccess}</p>}
+            <div className="rf-field">
               <label>Tenant</label>
               <select
+                className="rf-select"
                 value={selectedTenantId}
                 onChange={(e) => setSelectedTenantId(e.target.value)}
               >
@@ -141,28 +151,29 @@ export default function CommunicationCenterPage() {
                 ))}
               </select>
             </div>
-            <div className="form-group">
+            <div className="rf-field">
               <label>Message</label>
               <textarea
+                className="rf-textarea"
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 placeholder="Type your message..."
                 rows={3}
               />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={sending}>
+            <button type="submit" className="rf-btn rf-btn-primary" disabled={sending}>
               {sending ? 'Sending...' : 'Send SMS'}
             </button>
           </form>
         )}
       </div>
 
-      <div className="users-section">
-        <h2>Message History</h2>
-        {messages.length === 0 ? (
-          <p>No messages yet.</p>
-        ) : (
-          <table className="users-table">
+      <h2 className="rf-section-title">Message history</h2>
+      {messages.length === 0 ? (
+        <p className="rf-empty">No messages yet.</p>
+      ) : (
+        <div className="rf-table-wrap">
+          <table className="rf-table">
             <thead>
               <tr>
                 <th>Tenant</th>
@@ -181,7 +192,11 @@ export default function CommunicationCenterPage() {
                     <td>{tenant ? tenant.name : '—'}</td>
                     <td>{m.to_phone}</td>
                     <td>{m.message}</td>
-                    <td>{m.status === 'received' ? 'Received' : 'Sent'}</td>
+                    <td>
+                      <span className={`rf-badge ${m.status === 'received' ? 'neutral' : 'good'}`}>
+                        {m.status === 'received' ? 'Received' : 'Sent'}
+                      </span>
+                    </td>
                     <td>{m.status}</td>
                     <td>{new Date(m.created_at).toLocaleString()}</td>
                   </tr>
@@ -189,8 +204,8 @@ export default function CommunicationCenterPage() {
               })}
             </tbody>
           </table>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </AppShell>
   );
 }

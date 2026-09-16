@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import AppShell from '../components/AppShell';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -56,44 +57,50 @@ export default function AdminDashboardPage() {
   };
 
   if (loading) {
-    return <div className="admin-container"><p>Loading admin data...</p></div>;
+    return (
+      <AppShell active="admin">
+        <div className="rf-state"><p>Loading admin data...</p></div>
+      </AppShell>
+    );
   }
 
   if (accessDenied) {
-    return <div className="admin-container"><p>You don't have access to this page.</p></div>;
+    return (
+      <AppShell active="admin">
+        <div className="rf-state"><p>You don't have access to this page.</p></div>
+      </AppShell>
+    );
   }
 
   return (
-    <div className="admin-container">
-      <div className="admin-header">
+    <AppShell active="admin">
+      <div className="rf-page-header">
         <h1>Admin Dashboard</h1>
-        <p>Rentflow Platform Overview</p>
+        <p>Rentflow platform overview</p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-value">{stats.totalUsers}</div>
-          <div className="stat-label">Total Users</div>
+      <div className="rf-statgrid">
+        <div className="rf-statcard">
+          <div className="k">Total Users</div>
+          <div className="v">{stats.totalUsers}</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{stats.totalProperties}</div>
-          <div className="stat-label">Properties</div>
+        <div className="rf-statcard">
+          <div className="k">Properties</div>
+          <div className="v">{stats.totalProperties}</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{stats.totalTenants}</div>
-          <div className="stat-label">Tenants</div>
+        <div className="rf-statcard">
+          <div className="k">Tenants</div>
+          <div className="v">{stats.totalTenants}</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">${(stats.totalRevenue / 100).toFixed(2)}</div>
-          <div className="stat-label">Total Revenue</div>
+        <div className="rf-statcard">
+          <div className="k">Total Revenue</div>
+          <div className="v">${(stats.totalRevenue / 100).toFixed(2)}</div>
         </div>
       </div>
 
-      {/* Users Table */}
-      <div className="users-section">
-        <h2>Registered Users</h2>
-        <table className="users-table">
+      <h2 className="rf-section-title">Registered users</h2>
+      <div className="rf-table-wrap">
+        <table className="rf-table">
           <thead>
             <tr>
               <th>Email</th>
@@ -107,7 +114,7 @@ export default function AdminDashboardPage() {
                 <td>{user.email}</td>
                 <td>{new Date(user.created_at).toLocaleDateString()}</td>
                 <td>
-                  <span className={`status ${user.confirmed_at ? 'active' : 'pending'}`}>
+                  <span className={`rf-badge ${user.confirmed_at ? 'good' : 'warn'}`}>
                     {user.confirmed_at ? 'Active' : 'Pending'}
                   </span>
                 </td>
@@ -116,6 +123,6 @@ export default function AdminDashboardPage() {
           </tbody>
         </table>
       </div>
-    </div>
+    </AppShell>
   );
 }
