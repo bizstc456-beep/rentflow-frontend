@@ -7,9 +7,39 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
+// Quebec landlords typically collect rent on the 1st -- used to fill in the
+// {due_date} / {days_late} placeholders in the SMS templates.
+function nextDueDate() {
+  const now = new Date();
+  const due = now.getDate() === 1 ? now : new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  return due.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function daysLate() {
+  const day = new Date().getDate();
+  return day > 1 ? day - 1 : 0;
+}
+
+function fillTemplate(template, tenant) {
+  const vars = {
+    tenant_name: tenant.name,
+    rent_amount: ((tenant.rent_amount || 0) / 100).toFixed(2),
+    due_date: nextDueDate(),
+    days_late: String(daysLate()),
+    amount: ((tenant.pending_amount || tenant.rent_amount || 0) / 100).toFixed(2),
+    payment_date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+  };
+  let text = template.template_text || '';
+  Object.entries(vars).forEach(([key, val]) => {
+    text = text.split(`{${key}}`).join(val);
+  });
+  return text;
+}
+
 export default function CommunicationCenterPage() {
   const [tenants, setTenants] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [templates, setTemplates] = useState([]);
   const [selectedTenantId, setSelectedTenantId] = useState('');
   const [messageText, setMessageText] = useState('');
   const [loading, setLoading] = useState(true);
@@ -39,19 +69,23 @@ export default function CommunicationCenterPage() {
       const backend = process.env.REACT_APP_BACKEND_URL;
       const authHeaders = { Authorization: `Bearer ${session.access_token}` };
 
-      const [tenantsRes, messagesRes] = await Promise.all([
+      const [tenantsRes, messagesRes, templatesRes] = await Promise.all([
         fetch(`${backend}/api/tenants/landlord/${session.user.id}`, { headers: authHeaders }),
         fetch(`${backend}/api/sms/inbox/${session.user.id}`, { headers: authHeaders }),
+        fetch(`${backend}/api/sms/templates`, { headers: authHeaders }),
       ]);
 
       const tenantsData = await tenantsRes.json();
       const messagesData = await messagesRes.json();
+      const templatesData = await templatesRes.json();
 
       if (!tenantsRes.ok) throw new Error(tenantsData.error || 'Failed to load tenants');
       if (!messagesRes.ok) throw new Error(messagesData.error || 'Failed to load messages');
-
+      // Quick-action templates are a nice-to-have -- don't fail the whole
+      // page over them if that route hiccups.
       setTenants(tenantsData.tenants || []);
       setMessages(messagesData.messages || []);
+      setTemplates(templatesRes.ok ? (templatesData.templates || []) : []);
     } catch (err) {
       console.error('Error loading communication center:', err);
       setError('Could not load your messages. Please try again shortly.');
@@ -61,6 +95,22 @@ export default function CommunicationCenterPage() {
   };
 
   const tenantByPhone = (phone) => tenants.find((t) => t.phone === phone);
+  const selectedTenant = tenants.find((t) => t.id === selectedTenantId);
+
+  // "Payment Received" already goes out automatically when a payment is
+  // recorded, so it's left out of the quick actions here to avoid a
+  // duplicate-looking send. Late notices only make sense once a tenant is
+  // actually behind.
+  const quickTemplates = templates.filter((tpl) => {
+    if (tpl.template_type === 'payment-received') return false;
+    if (tpl.template_type === 'late-payment') return selectedTenant?.status === 'pending';
+    return true;
+  });
+
+  const handleQuickAction = (tpl) => {
+    if (!selectedTenant) return;
+    setMessageText(fillTemplate(tpl, selectedTenant));
+  };
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -151,6 +201,23 @@ export default function CommunicationCenterPage() {
                 ))}
               </select>
             </div>
+            {selectedTenant && quickTemplates.length > 0 && (
+              <div className="rf-field">
+                <label>Quick templates</label>
+                <div className="rf-quick-actions">
+                  {quickTemplates.map((tpl) => (
+                    <button
+                      key={tpl.id || tpl.template_name}
+                      type="button"
+                      className="rf-btn rf-btn-secondary"
+                      onClick={() => handleQuickAction(tpl)}
+                    >
+                      {tpl.template_name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="rf-field">
               <label>Message</label>
               <textarea

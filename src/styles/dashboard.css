@@ -795,3 +795,14 @@
   margin-top: 12px;
   background: var(--rf-accent-soft);
 }
+
+.rf-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rf-quick-actions .rf-btn {
+  padding: 7px 14px;
+  font-size: 12.5px;
+}
