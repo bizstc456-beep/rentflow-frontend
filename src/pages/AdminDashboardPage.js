@@ -15,6 +15,7 @@ export default function AdminDashboardPage() {
   });
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
     loadAdminData();
@@ -22,35 +23,31 @@ export default function AdminDashboardPage() {
 
   const loadAdminData = async () => {
     try {
-      // Get users from auth
-      const { data: { users: authUsers } } = await supabase.auth.admin.listUsers();
-      
-      // Get properties
-      const { data: properties, error: propsError } = await supabase
-        .from('properties')
-        .select('*');
-      if (propsError) console.error('Error loading properties:', propsError);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setAccessDenied(true);
+        return;
+      }
 
-      // Get tenants
-      const { data: tenants, error: tenantsError } = await supabase
-        .from('tenants')
-        .select('*');
-      if (tenantsError) console.error('Error loading tenants:', tenantsError);
-
-      // Get payments
-      const { data: payments, error: paymentsError } = await supabase
-        .from('payments')
-        .select('*');
-      if (paymentsError) console.error('Error loading payments:', paymentsError);
-
-      setStats({
-        totalUsers: authUsers?.length || 0,
-        totalProperties: properties?.length || 0,
-        totalTenants: tenants?.length || 0,
-        totalRevenue: payments?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0,
+      // Admin stats are fetched through the backend, which uses the service-role
+      // key server-side and checks the caller's email against an admin allowlist.
+      // This can never be done safely with a direct client-side Supabase call.
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admin/stats`, {
+        headers: { Authorization: `Bearer ${session.access_token}` },
       });
 
-      setUsers(authUsers || []);
+      if (res.status === 401 || res.status === 403) {
+        setAccessDenied(true);
+        return;
+      }
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to load admin data');
+      }
+
+      setStats(data.stats);
+      setUsers(data.users || []);
     } catch (error) {
       console.error('Error loading admin data:', error);
     } finally {
@@ -60,6 +57,10 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return <div className="admin-container"><p>Loading admin data...</p></div>;
+  }
+
+  if (accessDenied) {
+    return <div className="admin-container"><p>You don't have access to this page.</p></div>;
   }
 
   return (
