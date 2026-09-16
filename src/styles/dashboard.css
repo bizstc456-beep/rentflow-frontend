@@ -1,22 +1,39 @@
 /* ============================================
-   Rentflow dashboard design system (v1)
-   Applied so far to: the landlord dashboard.
-   Not yet applied to: Admin, Messages, Billing (see App.css) --
-   those get the same tokens in a follow-up pass.
+   Rentflow design system (v2 — "bold" identity)
+   Deep violet-to-crimson brand gradient, near-black
+   sidebar, vivid but accessible status colors.
+   Applies to every logged-in page via .rf-shell tokens.
    ============================================ */
 
 .rf-shell {
-  --rf-bg: #fcfbfc;
+  /* -- content surface -- */
+  --rf-bg: #f6f4fb;
   --rf-card: #ffffff;
-  --rf-line: #eae7ec;
-  --rf-ink: #1a1620;
-  --rf-ink2: #726d79;
-  --rf-accent: #8b3a62;
-  --rf-accent-soft: #f8ecf2;
-  --rf-good: #1b8a5a;
-  --rf-good-soft: #e7f5ee;
-  --rf-warn: #b5790a;
-  --rf-warn-soft: #faf1de;
+  --rf-line: #e6e1f0;
+  --rf-ink: #17111f;
+  --rf-ink2: #625d75;
+
+  /* -- brand -- */
+  --rf-accent: #7c3aed;
+  --rf-accent-2: #e0316d;
+  --rf-accent-soft: #f1e9ff;
+  --rf-gradient: linear-gradient(135deg, #7c3aed 0%, #e0316d 100%);
+
+  /* -- status -- */
+  --rf-good: #0ea968;
+  --rf-good-soft: #e2f9ee;
+  --rf-warn: #e8720c;
+  --rf-warn-soft: #fef1de;
+  --rf-danger: #e0294f;
+  --rf-danger-soft: #fce6ea;
+
+  /* -- sidebar (dark, on purpose — this is where "bold" lives) -- */
+  --rf-side-bg: #150f22;
+  --rf-side-bg2: #1f1531;
+  --rf-side-ink: #f5f2fb;
+  --rf-side-ink2: #a99bc4;
+  --rf-side-line: rgba(255, 255, 255, 0.09);
+  --rf-side-current-bg: rgba(255, 255, 255, 0.1);
 
   display: flex;
   min-height: 100vh;
@@ -25,21 +42,36 @@
   font-family: "Public Sans", system-ui, sans-serif;
 }
 
+/* ---- sidebar ---- */
 .rf-side {
-  width: 220px;
+  width: 232px;
   flex-shrink: 0;
-  border-right: 1px solid var(--rf-line);
+  background: linear-gradient(190deg, var(--rf-side-bg2) 0%, var(--rf-side-bg) 55%);
   padding: 26px 16px;
   display: flex;
   flex-direction: column;
 }
 
 .rf-brand {
-  font-family: "Outfit", sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  margin-bottom: 28px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  margin-bottom: 30px;
   padding: 0 10px;
+  color: var(--rf-side-ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rf-brand::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--rf-gradient);
+  flex-shrink: 0;
 }
 
 .rf-nav {
@@ -49,43 +81,50 @@
 }
 
 .rf-nav-link {
-  padding: 9px 10px;
-  border-radius: 8px;
-  color: var(--rf-ink2);
+  padding: 10px 12px;
+  border-radius: 9px;
+  color: var(--rf-side-ink2);
   text-decoration: none;
   font-size: 13.5px;
-  font-weight: 500;
+  font-weight: 600;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.rf-nav-link:hover {
+  color: var(--rf-side-ink);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .rf-nav-link.current {
-  background: var(--rf-accent-soft);
-  color: var(--rf-accent);
+  background: var(--rf-side-current-bg);
+  color: var(--rf-side-ink);
+  box-shadow: inset 2px 0 0 0 #e0316d;
 }
 
 .rf-signout {
   margin-top: auto;
-  padding: 9px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--rf-line);
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--rf-side-line);
   background: transparent;
-  color: var(--rf-ink2);
+  color: var(--rf-side-ink2);
   font: inherit;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-align: left;
 }
 
 .rf-signout:hover {
-  border-color: var(--rf-ink2);
-  color: var(--rf-ink);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--rf-side-ink);
 }
 
 .rf-main {
   flex: 1;
   min-width: 0;
-  padding: 30px 32px 48px;
-  max-width: 880px;
+  padding: 34px 36px 52px;
+  max-width: 920px;
 }
 
 .rf-state {
@@ -94,53 +133,64 @@
   font-family: "Public Sans", sans-serif;
 }
 
+/* ---- dashboard ---- */
 .rf-dash .rf-greet {
   font-size: 12.5px;
-  color: var(--rf-ink2);
-  margin: 0 0 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--rf-accent);
+  margin: 0 0 6px;
 }
 
 .rf-hero {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  margin-bottom: 26px;
+  gap: 12px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
 }
 
 .rf-hero-num {
-  font-family: "Outfit", sans-serif;
-  font-weight: 700;
-  font-size: 40px;
-  letter-spacing: -0.01em;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 46px;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
+  background: var(--rf-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .rf-hero-label {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--rf-ink2);
+  font-weight: 500;
 }
 
 .rf-chips {
   display: flex;
   gap: 10px;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
 .rf-chip {
   border: 1px solid var(--rf-line);
-  border-radius: 10px;
-  padding: 10px 14px;
+  border-radius: 11px;
+  padding: 11px 15px;
   font-size: 13px;
   display: flex;
   gap: 8px;
   align-items: baseline;
+  background: var(--rf-card);
 }
 
 .rf-chip b {
-  font-family: "Outfit", sans-serif;
-  font-size: 15px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 15.5px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -154,15 +204,15 @@
   align-items: center;
   gap: 14px;
   background: var(--rf-warn-soft);
-  border: 1px solid rgba(181, 121, 10, 0.25);
-  border-radius: 12px;
-  padding: 14px 18px;
+  border: 1px solid rgba(232, 114, 12, 0.28);
+  border-radius: 14px;
+  padding: 16px 20px;
   margin-bottom: 28px;
   flex-wrap: wrap;
 }
 
 .rf-banner-title {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   color: var(--rf-ink);
 }
@@ -177,19 +227,19 @@
   background: var(--rf-warn);
   color: #fff;
   border: none;
-  border-radius: 9px;
-  padding: 9px 16px;
+  border-radius: 10px;
+  padding: 10px 17px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
 }
 
 .rf-section-title {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 700;
-  font-family: "Outfit", sans-serif;
-  margin: 0 0 12px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  margin: 0 0 14px;
 }
 
 .rf-empty {
@@ -212,7 +262,7 @@
 }
 
 .rf-prow-addr {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
 }
 
@@ -223,8 +273,8 @@
 }
 
 .rf-prow-rent {
-  font-family: "Outfit", sans-serif;
-  font-weight: 600;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-weight: 700;
   font-size: 14.5px;
   font-variant-numeric: tabular-nums;
 }
@@ -234,7 +284,7 @@
   align-items: center;
   gap: 7px;
   font-size: 12.5px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .rf-dot-status.good {
@@ -256,14 +306,15 @@
 /* ---- shared page chrome (Admin / Messages / Billing) ---- */
 
 .rf-page-header {
-  margin-bottom: 26px;
+  margin-bottom: 28px;
 }
 
 .rf-page-header h1 {
-  font-family: "Outfit", sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0 0 4px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 5px;
 }
 
 .rf-page-header p {
@@ -274,8 +325,8 @@
 
 .rf-card {
   border: 1px solid var(--rf-line);
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 22px;
   background: var(--rf-card);
   margin-bottom: 28px;
 }
@@ -290,8 +341,8 @@
 
 .rf-statcard {
   border: 1px solid var(--rf-line);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 17px;
   background: var(--rf-card);
 }
 
@@ -299,19 +350,20 @@
   font-size: 12px;
   color: var(--rf-ink2);
   margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .rf-statcard .v {
-  font-family: "Outfit", sans-serif;
-  font-weight: 700;
-  font-size: 24px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 25px;
   font-variant-numeric: tabular-nums;
 }
 
 /* generic data table */
 .rf-table-wrap {
   border: 1px solid var(--rf-line);
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   overflow-x: auto;
 }
@@ -326,11 +378,11 @@
   text-align: left;
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   color: var(--rf-ink2);
-  font-weight: 600;
+  font-weight: 700;
   padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(124, 58, 237, 0.04);
   border-bottom: 1px solid var(--rf-line);
   white-space: nowrap;
 }
@@ -345,7 +397,7 @@
 }
 
 .rf-table tbody tr:hover {
-  background: rgba(0, 0, 0, 0.015);
+  background: rgba(124, 58, 237, 0.03);
 }
 
 /* badges */
@@ -354,7 +406,7 @@
   align-items: center;
   gap: 6px;
   font-size: 11.5px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 4px 10px;
   border-radius: 100px;
   white-space: nowrap;
@@ -383,7 +435,7 @@
 .rf-field label {
   display: block;
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--rf-ink);
   margin-bottom: 6px;
 }
@@ -395,10 +447,11 @@
   font: inherit;
   font-size: 13.5px;
   padding: 10px 12px;
-  border: 1px solid var(--rf-line);
-  border-radius: 9px;
+  border: 1.5px solid var(--rf-line);
+  border-radius: 10px;
   background: var(--rf-card);
   color: var(--rf-ink);
+  transition: border-color 0.12s ease;
 }
 
 .rf-textarea {
@@ -409,8 +462,9 @@
 .rf-input:focus,
 .rf-select:focus,
 .rf-textarea:focus {
-  outline: 2px solid var(--rf-accent);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--rf-accent);
+  box-shadow: 0 0 0 3px var(--rf-accent-soft);
 }
 
 /* buttons */
@@ -421,47 +475,97 @@
   gap: 6px;
   font: inherit;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 10px 18px;
-  border-radius: 9px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   text-decoration: none;
+  transition: transform 0.08s ease, filter 0.12s ease, background 0.12s ease;
+}
+
+.rf-btn:active {
+  transform: translateY(1px);
 }
 
 .rf-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
 .rf-btn-primary {
-  background: var(--rf-accent);
+  background: var(--rf-gradient);
   color: #fff;
+}
+
+.rf-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.06);
 }
 
 .rf-btn-secondary {
   background: transparent;
   color: var(--rf-ink);
-  border: 1px solid var(--rf-line);
+  border: 1.5px solid var(--rf-line);
+}
+
+.rf-btn-secondary:hover:not(:disabled) {
+  border-color: var(--rf-accent);
+  color: var(--rf-accent);
+}
+
+.rf-btn-danger {
+  background: transparent;
+  color: var(--rf-danger);
+  border: 1.5px solid var(--rf-danger-soft);
+}
+
+.rf-btn-danger:hover:not(:disabled) {
+  background: var(--rf-danger-soft);
+  border-color: var(--rf-danger);
 }
 
 .rf-btn-block {
   width: 100%;
 }
 
+/* consistent action groups: primary action on the right, secondary/danger to its left */
+.rf-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rf-actions.rf-actions-split {
+  justify-content: space-between;
+}
+
 /* alerts */
 .rf-alert {
   background: var(--rf-warn-soft);
-  border: 1px solid rgba(181, 121, 10, 0.3);
-  color: #7a5a1a;
+  border: 1px solid rgba(232, 114, 12, 0.3);
+  color: #8a4a06;
   font-size: 13px;
-  padding: 10px 14px;
-  border-radius: 9px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.rf-alert-danger {
+  background: var(--rf-danger-soft);
+  border: 1px solid rgba(224, 41, 79, 0.3);
+  color: #97253f;
+  font-size: 13px;
+  padding: 11px 14px;
+  border-radius: 10px;
   margin-bottom: 16px;
 }
 
 .rf-success-text {
   font-size: 13px;
+  font-weight: 600;
   color: var(--rf-good);
   margin: 0 0 12px;
 }
@@ -477,9 +581,10 @@
 }
 
 .rf-pricing-header h1 {
-  font-family: "Outfit", sans-serif;
-  font-size: 26px;
-  font-weight: 700;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   margin: 0 0 6px;
 }
 
@@ -497,10 +602,25 @@
 
 .rf-price-card {
   border: 1px solid var(--rf-line);
-  border-radius: 16px;
-  padding: 28px;
+  border-radius: 18px;
+  padding: 30px;
   margin-bottom: 30px;
   background: var(--rf-card);
+  position: relative;
+  overflow: hidden;
+}
+
+.rf-price-card::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: var(--rf-gradient);
+  opacity: 0.08;
+  pointer-events: none;
 }
 
 .rf-price-row {
@@ -513,15 +633,16 @@
 }
 
 .rf-price-row h2 {
-  font-family: "Outfit", sans-serif;
-  font-size: 18px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 19px;
+  font-weight: 700;
   margin: 0;
 }
 
 .rf-price-amount {
-  font-family: "Outfit", sans-serif;
-  font-weight: 700;
-  font-size: 30px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 32px;
 }
 
 .rf-price-amount .period {
@@ -536,7 +657,7 @@
   background: var(--rf-accent-soft);
   color: var(--rf-accent);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 5px 12px;
   border-radius: 100px;
   margin-bottom: 8px;
@@ -593,8 +714,9 @@
 }
 
 .rf-faq h2 {
-  font-family: "Outfit", sans-serif;
-  font-size: 16px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
   margin: 0 0 14px;
 }
 
@@ -628,8 +750,6 @@
     flex-direction: row;
     align-items: center;
     gap: 18px;
-    border-right: none;
-    border-bottom: 1px solid var(--rf-line);
     padding: 14px 16px;
   }
   .rf-brand {
@@ -645,7 +765,7 @@
     margin-left: auto;
   }
   .rf-main {
-    padding: 22px 18px 40px;
+    padding: 24px 18px 40px;
   }
 }
 
@@ -677,9 +797,9 @@
 
 .rf-property-card {
   border: 1px solid var(--rf-line);
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--rf-card);
-  padding: 20px;
+  padding: 22px;
   margin-bottom: 18px;
 }
 
@@ -692,8 +812,8 @@
 }
 
 .rf-property-head h3 {
-  font-family: "Outfit", sans-serif;
-  font-size: 16.5px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 17px;
   font-weight: 700;
   margin: 0 0 3px;
 }
@@ -736,9 +856,9 @@
   justify-content: space-between;
   gap: 14px;
   flex-wrap: wrap;
-  padding: 12px 14px;
+  padding: 13px 15px;
   border: 1px solid var(--rf-line);
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--rf-bg);
 }
 
@@ -753,7 +873,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 13.5px;
 }
 
@@ -766,7 +886,7 @@
   display: inline-flex;
   align-items: center;
   font-size: 10.5px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 3px 8px;
   border-radius: 100px;
   background: var(--rf-warn-soft);
@@ -775,7 +895,7 @@
 }
 
 .rf-unit-rent {
-  font-family: "Outfit", sans-serif;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
   font-weight: 700;
   font-size: 14.5px;
   font-variant-numeric: tabular-nums;
@@ -789,8 +909,8 @@
 }
 
 .rf-nested-card {
-  border: 1px dashed var(--rf-line);
-  border-radius: 12px;
+  border: 1.5px dashed rgba(124, 58, 237, 0.35);
+  border-radius: 14px;
   padding: 16px;
   margin-top: 12px;
   background: var(--rf-accent-soft);
@@ -805,4 +925,180 @@
 .rf-quick-actions .rf-btn {
   padding: 7px 14px;
   font-size: 12.5px;
+}
+
+/* ---- documents ---- */
+.rf-doc-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rf-doc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 13px;
+  border: 1px solid var(--rf-line);
+  border-radius: 10px;
+  background: var(--rf-card);
+  flex-wrap: wrap;
+}
+
+.rf-doc-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.rf-doc-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--rf-accent-soft);
+  color: var(--rf-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.rf-doc-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rf-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.rf-doc-name:hover {
+  color: var(--rf-accent);
+}
+
+.rf-doc-meta {
+  font-size: 11.5px;
+  color: var(--rf-ink2);
+}
+
+.rf-doc-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.rf-doc-upload-row input[type="file"] {
+  font-size: 12.5px;
+  color: var(--rf-ink2);
+  max-width: 220px;
+}
+
+.rf-doc-category-select {
+  font: inherit;
+  font-size: 12.5px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--rf-line);
+  border-radius: 8px;
+  background: var(--rf-card);
+  color: var(--rf-ink);
+}
+
+/* ---- auth pages (login / register) ---- */
+.rf-auth-page {
+  --rf-accent: #7c3aed;
+  --rf-accent-2: #e0316d;
+  --rf-danger: #e0294f;
+  --rf-danger-soft: #fce6ea;
+  --rf-line: #eae6f3;
+  --rf-ink: #17111f;
+  --rf-ink2: #625d75;
+  --rf-card: #ffffff;
+
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: "Public Sans", system-ui, sans-serif;
+  background: radial-gradient(circle at 15% 20%, #3a2266 0%, #150f22 45%),
+    radial-gradient(circle at 85% 85%, #4a1030 0%, transparent 55%),
+    #150f22;
+  position: relative;
+  overflow: hidden;
+}
+
+.rf-auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  background: var(--rf-card);
+  border-radius: 20px;
+  padding: 38px 34px;
+  box-shadow: 0 30px 60px -20px rgba(21, 15, 34, 0.5);
+}
+
+.rf-auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  color: var(--rf-ink);
+  margin-bottom: 22px;
+}
+
+.rf-auth-brand::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #7c3aed 0%, #e0316d 100%);
+  flex-shrink: 0;
+}
+
+.rf-auth-header {
+  margin-bottom: 26px;
+}
+
+.rf-auth-header h1 {
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+  color: var(--rf-ink);
+}
+
+.rf-auth-header p {
+  font-size: 13.5px;
+  color: var(--rf-ink2);
+  margin: 0;
+}
+
+.rf-auth-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--rf-ink2);
+}
+
+.rf-auth-footer a {
+  color: var(--rf-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.rf-auth-footer a:hover {
+  text-decoration: underline;
 }

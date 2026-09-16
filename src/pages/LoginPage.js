@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
+import '../styles/dashboard.css';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -30,17 +31,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h1>Rentflow</h1>
-          <p>Landlord Dashboard</p>
+    <div className="rf-auth-page">
+      <div className="rf-auth-card">
+        <div className="rf-auth-brand">Rentflow</div>
+        <div className="rf-auth-header">
+          <h1>Welcome back</h1>
+          <p>Sign in to your landlord dashboard.</p>
         </div>
         <form onSubmit={handleLogin}>
-          {error && <div className="error-alert">{error}</div>}
-          <div className="form-group">
+          {error && <div className="rf-alert-danger">{error}</div>}
+          <div className="rf-field">
             <label>Email</label>
             <input
+              className="rf-input"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -48,9 +51,10 @@ export default function LoginPage() {
               required
             />
           </div>
-          <div className="form-group">
+          <div className="rf-field">
             <label>Password</label>
             <input
+              className="rf-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -58,11 +62,11 @@ export default function LoginPage() {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button type="submit" className="rf-btn rf-btn-primary rf-btn-block" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
-        <div className="auth-footer">
+        <div className="rf-auth-footer">
           <p>Don't have an account? <Link to="/register">Sign up</Link></p>
         </div>
       </div>

@@ -28,6 +28,11 @@ function toDateInputValue(value) {
   return new Date(value).toISOString().slice(0, 10);
 }
 
+async function getSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session;
+}
+
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
   const [tenants, setTenants] = useState([]);
@@ -45,15 +50,14 @@ export default function PropertiesPage() {
   const [paymentForm, setPaymentForm] = useState(EMPTY_PAYMENT);
   const [paymentSuccess, setPaymentSuccess] = useState('');
 
+  // Which "Documents" panel is expanded -- 'property-<id>' or 'tenant-<id>'.
+  // Only one open at a time keeps the page from getting cluttered.
+  const [docsOpenKey, setDocsOpenKey] = useState(null);
+
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const getSession = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    return session;
-  };
 
   const loadData = async () => {
     try {
@@ -92,6 +96,10 @@ export default function PropertiesPage() {
     acc[t.property_id].push(t);
     return acc;
   }, {});
+
+  const toggleDocs = (key) => {
+    setDocsOpenKey((current) => (current === key ? null : key));
+  };
 
   // ---- property form ----
 
@@ -165,6 +173,31 @@ export default function PropertiesPage() {
     }
   };
 
+  const deleteProperty = async (p) => {
+    const unitCount = (tenantsByProperty[p.id] || []).length;
+    const warning = unitCount
+      ? `Delete ${p.address}? This also removes its ${unitCount} tenant${unitCount === 1 ? '' : 's'}, their payment history, and any documents. This can't be undone.`
+      : `Delete ${p.address}? This can't be undone.`;
+    if (!window.confirm(warning)) return;
+
+    try {
+      const session = await getSession();
+      if (!session) {
+        setError('Please log in again.');
+        return;
+      }
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/properties/${p.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to delete property');
+      await loadData();
+    } catch (err) {
+      setError(err.message || 'Failed to delete property.');
+    }
+  };
+
   // ---- tenant form ----
 
   const openNewTenantForm = (propertyId) => {
@@ -235,6 +268,28 @@ export default function PropertiesPage() {
       await loadData();
     } catch (err) {
       setFormError(err.message || 'Failed to save tenant.');
+    }
+  };
+
+  const deleteTenant = async (t) => {
+    const warning = `Remove ${t.name}? This also deletes their payment history and documents. This can't be undone.`;
+    if (!window.confirm(warning)) return;
+
+    try {
+      const session = await getSession();
+      if (!session) {
+        setError('Please log in again.');
+        return;
+      }
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/tenants/${t.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to delete tenant');
+      await loadData();
+    } catch (err) {
+      setError(err.message || 'Failed to delete tenant.');
     }
   };
 
@@ -341,142 +396,176 @@ export default function PropertiesPage() {
       {properties.length === 0 ? (
         <p className="rf-empty">You haven't added any properties yet. Click "Add property" to get started.</p>
       ) : (
-        properties.map((p) => (
-          <div className="rf-property-card" key={p.id}>
-            {propertyFormOpen === p.id ? (
-              <>
-                <h2 className="rf-section-title">Edit property</h2>
-                {formError && <div className="rf-alert">{formError}</div>}
-                <PropertyForm
-                  form={propertyForm}
-                  setForm={setPropertyForm}
-                  onSubmit={submitPropertyForm}
-                  onCancel={closePropertyForm}
-                />
-              </>
-            ) : (
-              <div className="rf-property-head">
-                <div>
-                  <div className="rf-prow-addr">{p.address}</div>
-                  <div className="rf-prow-city">
-                    {p.city}{p.property_type ? ` · ${p.property_type}` : ''}
-                    {p.bedrooms ? ` · ${p.bedrooms} bed` : ''}{p.bathrooms ? ` / ${p.bathrooms} bath` : ''}
+        properties.map((p) => {
+          const propertyDocsKey = `property-${p.id}`;
+          return (
+            <div className="rf-property-card" key={p.id}>
+              {propertyFormOpen === p.id ? (
+                <>
+                  <h2 className="rf-section-title">Edit property</h2>
+                  {formError && <div className="rf-alert">{formError}</div>}
+                  <PropertyForm
+                    form={propertyForm}
+                    setForm={setPropertyForm}
+                    onSubmit={submitPropertyForm}
+                    onCancel={closePropertyForm}
+                  />
+                </>
+              ) : (
+                <div className="rf-property-head">
+                  <div>
+                    <div className="rf-prow-addr">{p.address}</div>
+                    <div className="rf-prow-city">
+                      {p.city}{p.property_type ? ` · ${p.property_type}` : ''}
+                      {p.bedrooms ? ` · ${p.bedrooms} bed` : ''}{p.bathrooms ? ` / ${p.bathrooms} bath` : ''}
+                    </div>
+                    {p.notes && <div className="rf-property-notes">{p.notes}</div>}
                   </div>
-                  {p.notes && <div className="rf-property-notes">{p.notes}</div>}
+                  <div className="rf-property-actions">
+                    <button className="rf-btn rf-btn-secondary" onClick={() => toggleDocs(propertyDocsKey)}>
+                      {docsOpenKey === propertyDocsKey ? 'Hide documents' : 'Documents'}
+                    </button>
+                    <button className="rf-btn rf-btn-secondary" onClick={() => openEditPropertyForm(p)}>Edit</button>
+                    <button className="rf-btn rf-btn-primary" onClick={() => openNewTenantForm(p.id)}>+ Add tenant</button>
+                    <button className="rf-btn rf-btn-danger" onClick={() => deleteProperty(p)}>Delete</button>
+                  </div>
                 </div>
-                <div className="rf-property-actions">
-                  <button className="rf-btn rf-btn-secondary" onClick={() => openEditPropertyForm(p)}>Edit</button>
-                  <button className="rf-btn rf-btn-primary" onClick={() => openNewTenantForm(p.id)}>+ Add tenant</button>
+              )}
+
+              {docsOpenKey === propertyDocsKey && (
+                <div className="rf-nested-card">
+                  <h2 className="rf-section-title">Property documents</h2>
+                  <p className="rf-empty" style={{ marginTop: -8, marginBottom: 10 }}>
+                    Building-level files — insurance policy, deed, inspection reports.
+                  </p>
+                  <DocumentsPanel entityType="property" entityId={p.id} />
                 </div>
-              </div>
-            )}
+              )}
 
-            {tenantFormOpen?.propertyId === p.id && !tenantFormOpen.tenantId && (
-              <div className="rf-card rf-nested-card">
-                <h2 className="rf-section-title">New tenant</h2>
-                {formError && <div className="rf-alert">{formError}</div>}
-                <TenantForm
-                  form={tenantForm}
-                  setForm={setTenantForm}
-                  onSubmit={submitTenantForm}
-                  onCancel={closeTenantForm}
-                />
-              </div>
-            )}
+              {tenantFormOpen?.propertyId === p.id && !tenantFormOpen.tenantId && (
+                <div className="rf-card rf-nested-card">
+                  <h2 className="rf-section-title">New tenant</h2>
+                  {formError && <div className="rf-alert">{formError}</div>}
+                  <TenantForm
+                    form={tenantForm}
+                    setForm={setTenantForm}
+                    onSubmit={submitTenantForm}
+                    onCancel={closeTenantForm}
+                  />
+                </div>
+              )}
 
-            {(tenantsByProperty[p.id] || []).length === 0 ? (
-              <p className="rf-empty">No tenants yet for this property.</p>
-            ) : (
-              <div className="rf-unit-list">
-                {tenantsByProperty[p.id].map((t) => (
-                  <React.Fragment key={t.id}>
-                    {tenantFormOpen?.tenantId === t.id ? (
-                      <div className="rf-card rf-nested-card">
-                        <h2 className="rf-section-title">Edit tenant</h2>
-                        {formError && <div className="rf-alert">{formError}</div>}
-                        <TenantForm
-                          form={tenantForm}
-                          setForm={setTenantForm}
-                          onSubmit={submitTenantForm}
-                          onCancel={closeTenantForm}
-                        />
-                      </div>
-                    ) : (
-                      <div className="rf-unit-row">
-                        <div className="rf-unit-info">
-                          <div className="rf-unit-name">
-                            {t.name}{t.unit_label ? ` — ${t.unit_label}` : ''}
-                            {t.renewal_soon && <span className="rf-badge warn rf-unit-badge">Lease ends soon</span>}
+              {(tenantsByProperty[p.id] || []).length === 0 ? (
+                <p className="rf-empty">No tenants yet for this property.</p>
+              ) : (
+                <div className="rf-unit-list">
+                  {tenantsByProperty[p.id].map((t) => {
+                    const tenantDocsKey = `tenant-${t.id}`;
+                    return (
+                      <React.Fragment key={t.id}>
+                        {tenantFormOpen?.tenantId === t.id ? (
+                          <div className="rf-card rf-nested-card">
+                            <h2 className="rf-section-title">Edit tenant</h2>
+                            {formError && <div className="rf-alert">{formError}</div>}
+                            <TenantForm
+                              form={tenantForm}
+                              setForm={setTenantForm}
+                              onSubmit={submitTenantForm}
+                              onCancel={closeTenantForm}
+                            />
                           </div>
-                          <div className="rf-prow-city">
-                            {t.phone}{t.email ? ` · ${t.email}` : ''}
-                            {t.lease_end_date ? ` · lease ends ${toDateInputValue(t.lease_end_date)}` : ''}
-                          </div>
-                        </div>
-                        <div className="rf-prow-rent">{formatMoney(t.rent_amount)}/mo</div>
-                        <span className={`rf-dot-status ${t.status === 'paid' ? 'good' : 'warn'}`}>
-                          {t.status === 'paid' ? 'Paid' : `${formatMoney(t.pending_amount)} pending`}
-                        </span>
-                        <div className="rf-unit-actions">
-                          <button className="rf-btn rf-btn-secondary" onClick={() => openEditTenantForm(t)}>Edit</button>
-                          <button className="rf-btn rf-btn-primary" onClick={() => openPaymentForm(t)}>Record payment</button>
-                        </div>
-                      </div>
-                    )}
-
-                    {paymentFormOpen === t.id && (
-                      <div className="rf-card rf-nested-card">
-                        <h2 className="rf-section-title">Record a payment &mdash; {t.name}</h2>
-                        {formError && <div className="rf-alert">{formError}</div>}
-                        <form onSubmit={submitPaymentForm}>
-                          <div className="rf-form-row">
-                            <div className="rf-field">
-                              <label>Amount ($)</label>
-                              <input
-                                className="rf-input"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                value={paymentForm.amount}
-                                onChange={(e) => setPaymentForm({ ...paymentForm, amount: e.target.value })}
-                              />
+                        ) : (
+                          <div className="rf-unit-row">
+                            <div className="rf-unit-info">
+                              <div className="rf-unit-name">
+                                {t.name}{t.unit_label ? ` — ${t.unit_label}` : ''}
+                                {t.renewal_soon && <span className="rf-badge warn rf-unit-badge">Lease ends soon</span>}
+                              </div>
+                              <div className="rf-prow-city">
+                                {t.phone}{t.email ? ` · ${t.email}` : ''}
+                                {t.lease_end_date ? ` · lease ends ${toDateInputValue(t.lease_end_date)}` : ''}
+                              </div>
                             </div>
-                            <div className="rf-field">
-                              <label>Date</label>
-                              <input
-                                className="rf-input"
-                                type="date"
-                                value={paymentForm.payment_date}
-                                onChange={(e) => setPaymentForm({ ...paymentForm, payment_date: e.target.value })}
-                              />
-                            </div>
-                            <div className="rf-field">
-                              <label>Method</label>
-                              <select
-                                className="rf-select"
-                                value={paymentForm.payment_method}
-                                onChange={(e) => setPaymentForm({ ...paymentForm, payment_method: e.target.value })}
-                              >
-                                <option value="e-transfer">E-transfer</option>
-                                <option value="cheque">Cheque</option>
-                                <option value="cash">Cash</option>
-                                <option value="card">Card</option>
-                              </select>
+                            <div className="rf-prow-rent">{formatMoney(t.rent_amount)}/mo</div>
+                            <span className={`rf-dot-status ${t.status === 'paid' ? 'good' : 'warn'}`}>
+                              {t.status === 'paid' ? 'Paid' : `${formatMoney(t.pending_amount)} pending`}
+                            </span>
+                            <div className="rf-unit-actions">
+                              <button className="rf-btn rf-btn-secondary" onClick={() => toggleDocs(tenantDocsKey)}>
+                                {docsOpenKey === tenantDocsKey ? 'Hide docs' : 'Documents'}
+                              </button>
+                              <button className="rf-btn rf-btn-secondary" onClick={() => openEditTenantForm(t)}>Edit</button>
+                              <button className="rf-btn rf-btn-primary" onClick={() => openPaymentForm(t)}>Record payment</button>
+                              <button className="rf-btn rf-btn-danger" onClick={() => deleteTenant(t)}>Delete</button>
                             </div>
                           </div>
-                          <div className="rf-form-actions">
-                            <button type="submit" className="rf-btn rf-btn-primary">Record payment</button>
-                            <button type="button" className="rf-btn rf-btn-secondary" onClick={closePaymentForm}>Cancel</button>
+                        )}
+
+                        {docsOpenKey === tenantDocsKey && (
+                          <div className="rf-nested-card">
+                            <h2 className="rf-section-title">Documents &mdash; {t.name}</h2>
+                            <p className="rf-empty" style={{ marginTop: -8, marginBottom: 10 }}>
+                              Lease, ID copy, or anything else tied to this tenant.
+                            </p>
+                            <DocumentsPanel entityType="tenant" entityId={t.id} />
                           </div>
-                        </form>
-                      </div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-            )}
-          </div>
-        ))
+                        )}
+
+                        {paymentFormOpen === t.id && (
+                          <div className="rf-card rf-nested-card">
+                            <h2 className="rf-section-title">Record a payment &mdash; {t.name}</h2>
+                            {formError && <div className="rf-alert">{formError}</div>}
+                            <form onSubmit={submitPaymentForm}>
+                              <div className="rf-form-row">
+                                <div className="rf-field">
+                                  <label>Amount ($)</label>
+                                  <input
+                                    className="rf-input"
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    value={paymentForm.amount}
+                                    onChange={(e) => setPaymentForm({ ...paymentForm, amount: e.target.value })}
+                                  />
+                                </div>
+                                <div className="rf-field">
+                                  <label>Date</label>
+                                  <input
+                                    className="rf-input"
+                                    type="date"
+                                    value={paymentForm.payment_date}
+                                    onChange={(e) => setPaymentForm({ ...paymentForm, payment_date: e.target.value })}
+                                  />
+                                </div>
+                                <div className="rf-field">
+                                  <label>Method</label>
+                                  <select
+                                    className="rf-select"
+                                    value={paymentForm.payment_method}
+                                    onChange={(e) => setPaymentForm({ ...paymentForm, payment_method: e.target.value })}
+                                  >
+                                    <option value="e-transfer">E-transfer</option>
+                                    <option value="cheque">Cheque</option>
+                                    <option value="cash">Cash</option>
+                                    <option value="card">Card</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="rf-form-actions">
+                                <button type="submit" className="rf-btn rf-btn-primary">Record payment</button>
+                                <button type="button" className="rf-btn rf-btn-secondary" onClick={closePaymentForm}>Cancel</button>
+                              </div>
+                            </form>
+                          </div>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })
       )}
     </AppShell>
   );
@@ -580,5 +669,170 @@ function TenantForm({ form, setForm, onSubmit, onCancel }) {
         <button type="button" className="rf-btn rf-btn-secondary" onClick={onCancel}>Cancel</button>
       </div>
     </form>
+  );
+}
+
+const DOC_CATEGORIES = [
+  { value: 'lease', label: 'Lease' },
+  { value: 'id', label: 'ID copy' },
+  { value: 'insurance', label: 'Insurance' },
+  { value: 'inspection', label: 'Inspection' },
+  { value: 'other', label: 'Other' },
+];
+
+function docIconLabel(mimeType) {
+  if (!mimeType) return 'F';
+  if (mimeType.includes('pdf')) return 'PDF';
+  if (mimeType.includes('image')) return 'IMG';
+  return 'DOC';
+}
+
+function formatFileSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+// Self-contained upload/list/delete panel for one tenant's or one property's
+// documents. Mounted only while its "Documents" toggle is open, which is
+// also what triggers the initial load.
+function DocumentsPanel({ entityType, entityId }) {
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [category, setCategory] = useState('other');
+  const fileInputRef = React.useRef(null);
+
+  useEffect(() => {
+    loadDocuments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entityType, entityId]);
+
+  const loadDocuments = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const session = await getSession();
+      if (!session) {
+        setError('Please log in again.');
+        return;
+      }
+      const res = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/api/documents/${entityType}/${entityId}`,
+        { headers: { Authorization: `Bearer ${session.access_token}` } }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load documents');
+      setDocuments(data.documents || []);
+    } catch (err) {
+      setError(err.message || 'Failed to load documents.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    const file = fileInputRef.current?.files?.[0];
+    if (!file) {
+      setError('Choose a file first.');
+      return;
+    }
+
+    setUploading(true);
+    setError('');
+    try {
+      const session = await getSession();
+      if (!session) {
+        setError('Please log in again.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('category', category);
+      formData.append(entityType === 'tenant' ? 'tenant_id' : 'property_id', entityId);
+
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/documents/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      await loadDocuments();
+    } catch (err) {
+      setError(err.message || 'Upload failed.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDelete = async (doc) => {
+    if (!window.confirm(`Delete "${doc.file_name}"? This can't be undone.`)) return;
+    try {
+      const session = await getSession();
+      if (!session) {
+        setError('Please log in again.');
+        return;
+      }
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/documents/${doc.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to delete document');
+      await loadDocuments();
+    } catch (err) {
+      setError(err.message || 'Failed to delete document.');
+    }
+  };
+
+  return (
+    <div>
+      {error && <div className="rf-alert">{error}</div>}
+
+      {loading ? (
+        <p className="rf-empty">Loading documents...</p>
+      ) : documents.length === 0 ? (
+        <p className="rf-empty">No documents uploaded yet.</p>
+      ) : (
+        <div className="rf-doc-list">
+          {documents.map((doc) => (
+            <div className="rf-doc-row" key={doc.id}>
+              <div className="rf-doc-info">
+                <div className="rf-doc-icon">{docIconLabel(doc.mime_type)}</div>
+                <div>
+                  <a className="rf-doc-name" href={doc.url} target="_blank" rel="noopener noreferrer">
+                    {doc.file_name}
+                  </a>
+                  <div className="rf-doc-meta">
+                    {DOC_CATEGORIES.find((c) => c.value === doc.category)?.label || 'Other'}
+                    {doc.file_size ? ` · ${formatFileSize(doc.file_size)}` : ''}
+                  </div>
+                </div>
+              </div>
+              <button className="rf-btn rf-btn-danger" onClick={() => handleDelete(doc)}>Delete</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={handleUpload} className="rf-doc-upload-row">
+        <input type="file" ref={fileInputRef} />
+        <select className="rf-doc-category-select" value={category} onChange={(e) => setCategory(e.target.value)}>
+          {DOC_CATEGORIES.map((c) => (
+            <option key={c.value} value={c.value}>{c.label}</option>
+          ))}
+        </select>
+        <button type="submit" className="rf-btn rf-btn-secondary" disabled={uploading}>
+          {uploading ? 'Uploading...' : 'Upload'}
+        </button>
+      </form>
+    </div>
   );
 }
