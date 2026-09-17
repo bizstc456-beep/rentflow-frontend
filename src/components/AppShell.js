@@ -39,6 +39,7 @@ export default function AppShell({ active, children }) {
         <nav className="rf-nav">
           <Link to="/" className={linkClass('dashboard')}>Dashboard</Link>
           <Link to="/properties" className={linkClass('properties')}>Properties</Link>
+          <Link to="/reports" className={linkClass('reports')}>Reports</Link>
           <Link to="/messages" className={linkClass('messages')}>Messages</Link>
           <Link to="/payment" className={linkClass('billing')}>Billing</Link>
           {isAdmin && <Link to="/admin" className={linkClass('admin')}>Admin</Link>}
