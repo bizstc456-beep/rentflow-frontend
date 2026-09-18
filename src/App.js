@@ -12,6 +12,7 @@ import PropertiesPage from './pages/PropertiesPage';
 import ReportsPage from './pages/ReportsPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import MaintenancePage from './pages/MaintenancePage';
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.REACT_APP_SUPABASE_ANON_KEY
@@ -48,6 +49,7 @@ function App() {
         <Route path="/messages" element={user ? <CommunicationCenterPage /> : <Navigate to="/login" />} />
         <Route path="/properties" element={user ? <PropertiesPage /> : <Navigate to="/login" />} />
         <Route path="/reports" element={user ? <ReportsPage /> : <Navigate to="/login" />} />
+        <Route path="/maintenance" element={user ? <MaintenancePage /> : <Navigate to="/login" />} />
         <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
       </Routes>
     </Router>

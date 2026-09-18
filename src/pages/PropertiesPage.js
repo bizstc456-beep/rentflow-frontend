@@ -54,6 +54,9 @@ export default function PropertiesPage() {
   // Only one open at a time keeps the page from getting cluttered.
   const [docsOpenKey, setDocsOpenKey] = useState(null);
 
+  // Per-tenant "Invite to Portal" status: { [tenantId]: { loading?, error?, success? } }
+  const [inviteStatus, setInviteStatus] = useState({});
+
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -293,6 +296,27 @@ export default function PropertiesPage() {
     }
   };
 
+  const inviteTenant = async (t) => {
+    setInviteStatus((s) => ({ ...s, [t.id]: { loading: true } }));
+    try {
+      const session = await getSession();
+      if (!session) {
+        setInviteStatus((s) => ({ ...s, [t.id]: { error: 'Please log in again.' } }));
+        return;
+      }
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/tenants/${t.id}/invite`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send invite');
+      setInviteStatus((s) => ({ ...s, [t.id]: { success: true } }));
+      await loadData();
+    } catch (err) {
+      setInviteStatus((s) => ({ ...s, [t.id]: { error: err.message || 'Failed to send invite' } }));
+    }
+  };
+
   // ---- payment form ----
 
   const openPaymentForm = (t) => {
@@ -496,8 +520,26 @@ export default function PropertiesPage() {
                               </button>
                               <button className="rf-btn rf-btn-secondary" onClick={() => openEditTenantForm(t)}>Edit</button>
                               <button className="rf-btn rf-btn-primary" onClick={() => openPaymentForm(t)}>Record payment</button>
+                              {t.auth_user_id ? (
+                                <span className="rf-badge good">Portal invited</span>
+                              ) : (
+                                <button
+                                  className="rf-btn rf-btn-secondary"
+                                  onClick={() => inviteTenant(t)}
+                                  disabled={!t.email || inviteStatus[t.id]?.loading}
+                                  title={!t.email ? 'Add an email address first' : 'Send a portal invite email'}
+                                >
+                                  {inviteStatus[t.id]?.loading ? 'Inviting...' : 'Invite to Portal'}
+                                </button>
+                              )}
                               <button className="rf-btn rf-btn-danger" onClick={() => deleteTenant(t)}>Delete</button>
                             </div>
+                            {inviteStatus[t.id]?.error && (
+                              <div className="rf-alert-danger" style={{ marginTop: 8 }}>{inviteStatus[t.id].error}</div>
+                            )}
+                            {inviteStatus[t.id]?.success && (
+                              <div className="rf-alert-success" style={{ marginTop: 8 }}>Invite sent to {t.email}.</div>
+                            )}
                           </div>
                         )}
 
