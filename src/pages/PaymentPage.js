@@ -44,12 +44,18 @@ export default function PaymentPage() {
         return;
       }
 
-      // Call backend to create Stripe checkout session
+      // Call backend to create Stripe checkout session. The backend now
+      // derives the user from this session token rather than trusting the
+      // body, so it has to be sent.
+      const { data: { session } } = await supabase.auth.getSession();
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}/api/create-checkout-session`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token}`,
+          },
           body: JSON.stringify({ userId: user.id, email: user.email }),
         }
       );
