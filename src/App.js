@@ -13,6 +13,10 @@ import ReportsPage from './pages/ReportsPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import MaintenancePage from './pages/MaintenancePage';
+import TenantLoginPage from './pages/TenantLoginPage';
+import TenantSetPasswordPage from './pages/TenantSetPasswordPage';
+import TenantPortalPage from './pages/TenantPortalPage';
+import TenantMaintenancePage from './pages/TenantMaintenancePage';
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.REACT_APP_SUPABASE_ANON_KEY
@@ -50,6 +54,10 @@ function App() {
         <Route path="/properties" element={user ? <PropertiesPage /> : <Navigate to="/login" />} />
         <Route path="/reports" element={user ? <ReportsPage /> : <Navigate to="/login" />} />
         <Route path="/maintenance" element={user ? <MaintenancePage /> : <Navigate to="/login" />} />
+        <Route path="/tenant/login" element={!user ? <TenantLoginPage /> : <Navigate to="/tenant" />} />
+        <Route path="/tenant/set-password" element={<TenantSetPasswordPage />} />
+        <Route path="/tenant" element={user ? <TenantPortalPage /> : <Navigate to="/tenant/login" />} />
+        <Route path="/tenant/maintenance" element={user ? <TenantMaintenancePage /> : <Navigate to="/tenant/login" />} />
         <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
       </Routes>
     </Router>

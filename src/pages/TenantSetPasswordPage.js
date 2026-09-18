@@ -8,11 +8,12 @@ const supabase = createClient(
   process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-// Reached via the link in the "reset your password" email. Supabase parses
-// the recovery token out of the URL on load and, once that's done, fires a
-// PASSWORD_RECOVERY auth event -- that's our signal that it's safe to show
-// the "set a new password" form and call updateUser().
-export default function ResetPasswordPage() {
+// Reached via the landlord's "invite to portal" email. Supabase's invite
+// link, once clicked, establishes a session and fires either SIGNED_IN or
+// PASSWORD_RECOVERY depending on flow -- either one means it's safe to show
+// the "set a password" form and call updateUser(). Same pattern as the
+// landlord ResetPasswordPage, extended to cover both event names.
+export default function TenantSetPasswordPage() {
   const [ready, setReady] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -23,17 +24,17 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') setReady(true);
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') setReady(true);
     });
-    // Covers the case where the recovery session was already established
-    // (and the event already fired) before this listener attached.
+    // Covers the case where the session was already established (and the
+    // event already fired) before this listener attached.
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) setReady(true);
     });
     return () => subscription?.unsubscribe();
   }, []);
 
-  const handleReset = async (e) => {
+  const handleSetPassword = async (e) => {
     e.preventDefault();
     setError('');
     if (password.length < 6) {
@@ -47,23 +48,10 @@ export default function ResetPasswordPage() {
     setLoading(true);
     try {
       const { error } = await supabase.auth.updateUser({ password });
-      if (error) {
-        setError(error.message);
-      } else {
+      if (error) setError(error.message);
+      else {
         setSuccess(true);
-        // A recovery link can belong to a tenant portal account too --
-        // send them to their portal instead of the landlord dashboard.
-        let destination = '/';
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          const meRes = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/tenant-portal/me`, {
-            headers: { Authorization: `Bearer ${session?.access_token}` },
-          });
-          if (meRes.ok) destination = '/tenant';
-        } catch (lookupErr) {
-          // Not a tenant account (or backend unreachable) -- fall back to '/'.
-        }
-        setTimeout(() => navigate(destination), 2000);
+        setTimeout(() => navigate('/tenant'), 2000);
       }
     } catch (err) {
       setError('An error occurred');
@@ -77,14 +65,14 @@ export default function ResetPasswordPage() {
       <div className="rf-auth-card">
         <div className="rf-auth-brand">Rentflow</div>
         <div className="rf-auth-header">
-          <h1>Set a new password</h1>
-          <p>Choose a new password for your account.</p>
+          <h1>Set up your portal login</h1>
+          <p>Choose a password to access your tenant portal.</p>
         </div>
 
         {success ? (
-          <div className="rf-auth-footer">Password updated — taking you to your dashboard...</div>
+          <div className="rf-auth-footer">Password set — taking you to your portal...</div>
         ) : ready ? (
-          <form onSubmit={handleReset}>
+          <form onSubmit={handleSetPassword}>
             {error && <div className="rf-alert-danger">{error}</div>}
             <div className="rf-field">
               <label>New password</label>
@@ -99,7 +87,7 @@ export default function ResetPasswordPage() {
               />
             </div>
             <div className="rf-field">
-              <label>Confirm new password</label>
+              <label>Confirm password</label>
               <input
                 className="rf-input"
                 type="password"
@@ -111,16 +99,17 @@ export default function ResetPasswordPage() {
               />
             </div>
             <button type="submit" className="rf-btn rf-btn-primary rf-btn-block" disabled={loading}>
-              {loading ? 'Updating...' : 'Update password'}
+              {loading ? 'Saving...' : 'Set password & continue'}
             </button>
           </form>
         ) : (
           <div>
             <div className="rf-alert-danger">
-              This link is invalid or has expired.
+              This invite link is invalid or has expired.
             </div>
             <div className="rf-auth-footer">
-              <p><Link to="/forgot-password">Request a new reset link</Link></p>
+              <p>Ask your landlord to resend your portal invite.</p>
+              <p><Link to="/tenant/login">Back to sign in</Link></p>
             </div>
           </div>
         )}
