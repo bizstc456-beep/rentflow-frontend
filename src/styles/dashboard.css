@@ -563,6 +563,16 @@
   margin-bottom: 16px;
 }
 
+.rf-alert-success {
+  background: var(--rf-good-soft);
+  border: 1px solid rgba(14, 169, 104, 0.3);
+  color: #0d7d4d;
+  font-size: 13px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
 .rf-success-text {
   font-size: 13px;
   font-weight: 600;

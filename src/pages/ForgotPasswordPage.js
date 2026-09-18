@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
         </div>
         {sent ? (
           <div>
-            <div className="rf-alert-danger" style={{ background: 'var(--rf-good-soft)', color: 'var(--rf-good)' }}>
+            <div className="rf-alert-success">
               If an account exists for {email}, a reset link is on its way. Check your inbox (and spam folder).
             </div>
             <div className="rf-auth-footer">
