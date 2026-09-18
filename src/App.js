@@ -10,6 +10,8 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import CommunicationCenterPage from './pages/CommunicationCenterPage';
 import PropertiesPage from './pages/PropertiesPage';
 import ReportsPage from './pages/ReportsPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
   process.env.REACT_APP_SUPABASE_ANON_KEY
@@ -38,6 +40,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/payment" element={user ? <PaymentPage /> : <Navigate to="/login" />} />
        <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/login" />} />
         <Route path="/admin" element={user ? <AdminDashboardPage /> : <Navigate to="/login" />} />

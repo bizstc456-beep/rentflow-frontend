@@ -52,7 +52,10 @@ export default function LoginPage() {
             />
           </div>
           <div className="rf-field">
-            <label>Password</label>
+            <div className="rf-field-label-row">
+              <label>Password</label>
+              <Link to="/forgot-password">Forgot password?</Link>
+            </div>
             <input
               className="rf-input"
               type="password"
