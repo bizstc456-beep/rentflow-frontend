@@ -41,6 +41,7 @@ export default function AppShell({ active, children }) {
           <Link to="/properties" className={linkClass('properties')}>Properties</Link>
           <Link to="/reports" className={linkClass('reports')}>Reports</Link>
           <Link to="/maintenance" className={linkClass('maintenance')}>Maintenance</Link>
+          <Link to="/renewals" className={linkClass('renewals')}>Lease Renewals</Link>
           <Link to="/messages" className={linkClass('messages')}>Messages</Link>
           <Link to="/payment" className={linkClass('billing')}>Billing</Link>
           {isAdmin && <Link to="/admin" className={linkClass('admin')}>Admin</Link>}
