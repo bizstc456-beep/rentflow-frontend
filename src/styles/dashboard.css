@@ -422,6 +422,7 @@
   .rf-table-stack td {
     display: block;
     width: 100%;
+    box-sizing: border-box;
   }
 
   .rf-table-stack tr {
