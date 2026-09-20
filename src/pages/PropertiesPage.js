@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import AppShell from '../components/AppShell';
+import KebabMenu from '../components/KebabMenu';
 
 const supabase = createClient(
   process.env.REACT_APP_SUPABASE_URL,
@@ -446,12 +447,14 @@ export default function PropertiesPage() {
                     {p.notes && <div className="rf-property-notes">{p.notes}</div>}
                   </div>
                   <div className="rf-property-actions">
-                    <button className="rf-btn rf-btn-secondary" onClick={() => toggleDocs(propertyDocsKey)}>
-                      {docsOpenKey === propertyDocsKey ? 'Hide documents' : 'Documents'}
-                    </button>
                     <button className="rf-btn rf-btn-secondary" onClick={() => openEditPropertyForm(p)}>Edit</button>
                     <button className="rf-btn rf-btn-primary" onClick={() => openNewTenantForm(p.id)}>+ Add tenant</button>
-                    <button className="rf-btn rf-btn-danger" onClick={() => deleteProperty(p)}>Delete</button>
+                    <KebabMenu
+                      items={[
+                        { label: docsOpenKey === propertyDocsKey ? 'Hide documents' : 'Documents', onClick: () => toggleDocs(propertyDocsKey) },
+                        { label: 'Delete property', onClick: () => deleteProperty(p), danger: true },
+                      ]}
+                    />
                   </div>
                 </div>
               )}
@@ -515,9 +518,6 @@ export default function PropertiesPage() {
                               {t.status === 'paid' ? 'Paid' : `${formatMoney(t.pending_amount)} pending`}
                             </span>
                             <div className="rf-unit-actions">
-                              <button className="rf-btn rf-btn-secondary" onClick={() => toggleDocs(tenantDocsKey)}>
-                                {docsOpenKey === tenantDocsKey ? 'Hide docs' : 'Documents'}
-                              </button>
                               <button className="rf-btn rf-btn-secondary" onClick={() => openEditTenantForm(t)}>Edit</button>
                               <button className="rf-btn rf-btn-primary" onClick={() => openPaymentForm(t)}>Record payment</button>
                               {t.auth_user_id ? (
@@ -532,7 +532,12 @@ export default function PropertiesPage() {
                                   {inviteStatus[t.id]?.loading ? 'Inviting...' : 'Invite to Portal'}
                                 </button>
                               )}
-                              <button className="rf-btn rf-btn-danger" onClick={() => deleteTenant(t)}>Delete</button>
+                              <KebabMenu
+                                items={[
+                                  { label: docsOpenKey === tenantDocsKey ? 'Hide docs' : 'Documents', onClick: () => toggleDocs(tenantDocsKey) },
+                                  { label: 'Delete tenant', onClick: () => deleteTenant(t), danger: true },
+                                ]}
+                              />
                             </div>
                             {inviteStatus[t.id]?.error && (
                               <div className="rf-alert-danger" style={{ marginTop: 8 }}>{inviteStatus[t.id].error}</div>

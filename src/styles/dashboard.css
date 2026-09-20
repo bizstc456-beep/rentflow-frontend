@@ -928,6 +928,71 @@
   white-space: nowrap;
 }
 
+.rf-kebab {
+  position: relative;
+  display: inline-flex;
+}
+
+.rf-kebab-trigger {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rf-line);
+  border-radius: 8px;
+  background: var(--rf-card);
+  color: var(--rf-ink2);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.rf-kebab-trigger:hover {
+  background: var(--rf-bg);
+  color: var(--rf-ink);
+}
+
+.rf-kebab-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 20;
+  min-width: 160px;
+  background: var(--rf-card);
+  border: 1px solid var(--rf-line);
+  border-radius: 10px;
+  box-shadow: 0 16px 32px -12px rgba(21, 15, 34, 0.28);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rf-kebab-item {
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--rf-ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rf-kebab-item:hover {
+  background: var(--rf-bg);
+}
+
+.rf-kebab-item.danger {
+  color: var(--rf-danger);
+}
+
+.rf-kebab-item.danger:hover {
+  background: var(--rf-danger-soft);
+}
+
 .rf-nested-card {
   border: 1.5px dashed rgba(124, 58, 237, 0.35);
   border-radius: 14px;
