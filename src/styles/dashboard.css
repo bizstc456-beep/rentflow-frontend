@@ -400,6 +400,66 @@
   background: rgba(124, 58, 237, 0.03);
 }
 
+/* Reflow into stacked cards instead of horizontal scroll on narrow screens.
+   Opt-in via the rf-table-stack modifier (used on Reports tables) so other
+   tables keep their current layout. */
+@media (max-width: 640px) {
+  .rf-table-stack thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .rf-table-stack,
+  .rf-table-stack tbody,
+  .rf-table-stack tr,
+  .rf-table-stack td {
+    display: block;
+    width: 100%;
+  }
+
+  .rf-table-stack tr {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rf-line);
+  }
+
+  .rf-table-stack tr:last-child {
+    border-bottom: none;
+  }
+
+  .rf-table-stack td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 5px 0;
+    border-bottom: none;
+    text-align: right;
+  }
+
+  .rf-table-stack td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    margin-right: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--rf-ink2);
+    text-align: left;
+  }
+
+  .rf-table-stack td:not([data-label]) {
+    justify-content: flex-end;
+  }
+}
+
 /* badges */
 .rf-badge {
   display: inline-flex;

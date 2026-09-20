@@ -309,7 +309,7 @@ export default function ReportsPage() {
             <p className="rf-empty">No properties yet.</p>
           ) : (
             <div className="rf-table-wrap" style={{ marginBottom: 28 }}>
-              <table className="rf-table">
+              <table className="rf-table rf-table-stack">
                 <thead>
                   <tr>
                     <th>Property</th>
@@ -321,10 +321,10 @@ export default function ReportsPage() {
                 <tbody>
                   {report.properties.map((p) => (
                     <tr key={p.id}>
-                      <td>{p.address}</td>
-                      <td>{formatMoney(p.income)}</td>
-                      <td>{formatMoney(p.expenses)}</td>
-                      <td>{formatMoney(p.net)}</td>
+                      <td data-label="Property">{p.address}</td>
+                      <td data-label="Income">{formatMoney(p.income)}</td>
+                      <td data-label="Expenses">{formatMoney(p.expenses)}</td>
+                      <td data-label="Net">{formatMoney(p.net)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -336,7 +336,7 @@ export default function ReportsPage() {
             <>
               <h2 className="rf-section-title">Expenses by category</h2>
               <div className="rf-table-wrap" style={{ marginBottom: 28 }}>
-                <table className="rf-table">
+                <table className="rf-table rf-table-stack">
                   <thead>
                     <tr>
                       <th>Category</th>
@@ -346,8 +346,8 @@ export default function ReportsPage() {
                   <tbody>
                     {report.expenses_by_category.map((c) => (
                       <tr key={c.category}>
-                        <td>{categoryLabel(c.category)}</td>
-                        <td>{formatMoney(c.amount)}</td>
+                        <td data-label="Category">{categoryLabel(c.category)}</td>
+                        <td data-label="Amount">{formatMoney(c.amount)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -441,7 +441,7 @@ export default function ReportsPage() {
         <p className="rf-empty">No expenses logged yet.</p>
       ) : (
         <div className="rf-table-wrap">
-          <table className="rf-table">
+          <table className="rf-table rf-table-stack">
             <thead>
               <tr>
                 <th>Date</th>
@@ -455,11 +455,11 @@ export default function ReportsPage() {
             <tbody>
               {expenses.map((e) => (
                 <tr key={e.id}>
-                  <td>{e.expense_date}</td>
-                  <td>{propertyAddress(e.property_id)}</td>
-                  <td><span className="rf-badge neutral">{categoryLabel(e.category)}</span></td>
-                  <td>{e.notes || '—'}</td>
-                  <td>{formatMoney(e.amount)}</td>
+                  <td data-label="Date">{e.expense_date}</td>
+                  <td data-label="Property">{propertyAddress(e.property_id)}</td>
+                  <td data-label="Category"><span className="rf-badge neutral">{categoryLabel(e.category)}</span></td>
+                  <td data-label="Notes">{e.notes || '—'}</td>
+                  <td data-label="Amount">{formatMoney(e.amount)}</td>
                   <td>
                     <button className="rf-btn rf-btn-danger" onClick={() => deleteExpense(e)}>Delete</button>
                   </td>
