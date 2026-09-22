@@ -63,6 +63,18 @@ export default function PropertiesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Deep link from the dashboard's "+ Add property" quick action
+  // (?new=1) -- opens the form once, then cleans the URL so a refresh
+  // doesn't reopen it.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('new') === '1') {
+      openNewPropertyForm();
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const loadData = async () => {
     try {
       const session = await getSession();

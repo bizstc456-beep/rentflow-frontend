@@ -4,7 +4,7 @@ import LandlordDashboardPage from './LandlordDashboardPage';
 
 export default function DashboardPage() {
   return (
-    <AppShell active="dashboard">
+    <AppShell active="dashboard" wide>
       <LandlordDashboardPage />
     </AppShell>
   );

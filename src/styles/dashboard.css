@@ -1308,3 +1308,331 @@
 .rf-field-label-row a:hover {
   text-decoration: underline;
 }
+
+/* ============================================
+   Dashboard right rail (Landlord + Admin) +
+   "alive" motion treatment
+   ============================================ */
+
+.rf-main-wide {
+  max-width: 1180px;
+}
+
+.rf-dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 28px;
+  align-items: start;
+}
+
+.rf-dash-main {
+  min-width: 0;
+}
+
+.rf-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.rf-rail-card {
+  background: var(--rf-card);
+  border: 1px solid var(--rf-line);
+  border-radius: 14px;
+  padding: 17px 18px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.rf-rail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(23, 17, 31, 0.08);
+}
+
+.rf-rail-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.rf-rail-card-title {
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.rf-rail-card-head .rf-rail-card-title {
+  margin-bottom: 0;
+}
+
+.rf-rail-view-all {
+  color: var(--rf-accent);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.rf-rail-view-all:hover {
+  text-decoration: underline;
+}
+
+.rf-rail-empty {
+  font-size: 12px;
+  color: var(--rf-ink2);
+  margin: 0;
+}
+
+/* quick actions */
+.rf-quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.rf-quick-action {
+  border: 1.5px solid var(--rf-line);
+  border-radius: 9px;
+  padding: 9px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--rf-ink);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.rf-quick-action:hover {
+  border-color: var(--rf-accent);
+  color: var(--rf-accent);
+  transform: translateY(-1px);
+}
+
+/* recent activity */
+.rf-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.rf-activity-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rf-activity-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--rf-good);
+}
+
+.rf-activity-dot.accent {
+  background: var(--rf-accent);
+}
+
+.rf-activity-text {
+  flex: 1;
+  font-size: 12.5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-activity-date {
+  color: var(--rf-ink3, var(--rf-ink2));
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* rail count (maintenance) */
+.rf-rail-count {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.rf-rail-count b {
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.rf-rail-count span {
+  color: var(--rf-ink2);
+  font-size: 12px;
+}
+
+.rf-rail-mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rf-rail-mini-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rf-rail-mini-row span:first-child {
+  font-size: 12px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* needs-attention (admin) */
+.rf-attention-row + .rf-attention-row {
+  margin-top: 2px;
+}
+
+.rf-attention-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rf-attention-email {
+  font-size: 12.5px;
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-attention-reason {
+  color: var(--rf-ink3, var(--rf-ink2));
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* platform activity (admin) */
+.rf-activity-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rf-activity-stat-row span:first-child {
+  color: var(--rf-ink2);
+  font-size: 12px;
+}
+
+.rf-activity-stat-row span:last-child {
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* signups sparkline */
+.rf-signups-delta {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.rf-signups-delta b {
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.rf-signups-delta span {
+  color: var(--rf-ink2);
+  font-size: 11.5px;
+}
+
+/* badges: extra variants for the rail */
+.rf-badge.danger {
+  background: var(--rf-danger-soft);
+  color: var(--rf-danger);
+}
+
+.rf-badge.muted {
+  background: var(--rf-accent-soft);
+  color: var(--rf-ink2);
+}
+
+.rf-badge-pulse {
+  position: relative;
+}
+
+.rf-badge-pulse::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: rf-pulse 1.8s ease-in-out infinite;
+}
+
+/* entrance motion */
+.rf-anim-in {
+  animation: rf-fade-up 0.5s ease both;
+}
+
+@keyframes rf-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rf-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 currentColor;
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 3px transparent;
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-anim-in {
+    animation: none;
+  }
+  .rf-rail-card,
+  .rf-quick-action {
+    transition: none;
+  }
+  .rf-rail-card:hover {
+    transform: none;
+  }
+  .rf-quick-action:hover {
+    transform: none;
+  }
+  .rf-badge-pulse::before {
+    animation: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .rf-dash-grid {
+    grid-template-columns: 1fr;
+  }
+  .rf-rail {
+    order: 2;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import AppShell from '../components/AppShell';
 
@@ -109,6 +109,22 @@ export default function ReportsPage() {
     loadAll(start, end);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Deep link from the dashboard's "Log expense" quick action (?new=1) --
+  // openExpenseForm needs `properties` loaded (it defaults to the first
+  // one), so this waits for loading to finish and only fires once.
+  const handledNewExpenseParam = useRef(false);
+  useEffect(() => {
+    if (handledNewExpenseParam.current) return;
+    if (loading || properties.length === 0) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('new') === '1') {
+      handledNewExpenseParam.current = true;
+      openExpenseForm();
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, properties]);
 
   const applyPreset = (value) => {
     setPreset(value);

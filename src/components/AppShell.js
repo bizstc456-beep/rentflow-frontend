@@ -14,7 +14,7 @@ const ADMIN_EMAILS = ['bizstc456@gmail.com'];
 
 // Shared sidebar layout for the logged-in app. Wrap a page's content with
 // <AppShell active="dashboard">...</AppShell> to get the nav + sign out.
-export default function AppShell({ active, children }) {
+export default function AppShell({ active, wide, children }) {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -48,7 +48,7 @@ export default function AppShell({ active, children }) {
         </nav>
         <button onClick={handleLogout} className="rf-signout">Sign Out</button>
       </aside>
-      <main className="rf-main">{children}</main>
+      <main className={`rf-main${wide ? ' rf-main-wide' : ''}`}>{children}</main>
     </div>
   );
 }
