@@ -38,6 +38,7 @@ export default function AppShell({ active, wide, children }) {
         <div className="rf-brand">Rentflow</div>
         <nav className="rf-nav">
           <Link to="/" className={linkClass('dashboard')}>Dashboard</Link>
+          <Link to="/insights" className={linkClass('insights')}>Insights</Link>
           <Link to="/properties" className={linkClass('properties')}>Properties</Link>
           <Link to="/reports" className={linkClass('reports')}>Reports</Link>
           <Link to="/maintenance" className={linkClass('maintenance')}>Maintenance</Link>

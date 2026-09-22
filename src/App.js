@@ -10,6 +10,7 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import CommunicationCenterPage from './pages/CommunicationCenterPage';
 import PropertiesPage from './pages/PropertiesPage';
 import ReportsPage from './pages/ReportsPage';
+import InsightsPage from './pages/InsightsPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import MaintenancePage from './pages/MaintenancePage';
@@ -54,6 +55,7 @@ function App() {
         <Route path="/messages" element={user ? <CommunicationCenterPage /> : <Navigate to="/login" />} />
         <Route path="/properties" element={user ? <PropertiesPage /> : <Navigate to="/login" />} />
         <Route path="/reports" element={user ? <ReportsPage /> : <Navigate to="/login" />} />
+        <Route path="/insights" element={user ? <InsightsPage /> : <Navigate to="/login" />} />
         <Route path="/maintenance" element={user ? <MaintenancePage /> : <Navigate to="/login" />} />
         <Route path="/tenant/login" element={!user ? <TenantLoginPage /> : <Navigate to="/tenant" />} />
         <Route path="/tenant/set-password" element={<TenantSetPasswordPage />} />
