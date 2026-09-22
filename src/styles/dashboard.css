@@ -1315,7 +1315,10 @@
    ============================================ */
 
 .rf-main-wide {
-  max-width: 1180px;
+  /* No cap -- .rf-main is flex:1 inside .rf-shell, so this lets the
+     dashboard fill whatever width is left next to the fixed sidebar
+     instead of stranding a dead gap on wide screens. */
+  max-width: none;
 }
 
 .rf-dash-grid {
