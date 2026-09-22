@@ -1891,3 +1891,38 @@
   .rf-ins-kpis { grid-template-columns:repeat(2,1fr); }
   .rf-ins-rail { order:2; }
 }
+
+/* ============================================
+   MAINTENANCE — VENDOR CONTACTS
+   ============================================ */
+.rf-mnt-grid { display:grid; grid-template-columns:1fr 320px; gap:22px; align-items:start; }
+.rf-mnt-main { min-width:0; }
+.rf-mnt-rail { display:flex; flex-direction:column; gap:14px; }
+
+.rf-vend-card { padding:18px; }
+.rf-vend-head { margin-bottom:14px; }
+.rf-vend-title { font-family:'Bricolage Grotesque',sans-serif; font-size:15px; font-weight:800; color:var(--rf-ink); margin-bottom:4px; }
+.rf-vend-sub { font-size:12.5px; color:var(--rf-ink2); line-height:1.5; }
+
+.rf-vend-list { display:flex; flex-direction:column; gap:2px; margin-bottom:4px; }
+.rf-vend-row { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:12px 0; border-bottom:1px solid var(--rf-line); }
+.rf-vend-row:last-child { border-bottom:none; }
+.rf-vend-row-main { min-width:0; flex:1; }
+.rf-vend-row-top { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+.rf-vend-name { font-size:13.5px; font-weight:700; color:var(--rf-ink); }
+.rf-vend-tag { font-size:10.5px; padding:3px 9px; }
+.rf-vend-contact { display:flex; flex-direction:column; gap:4px; }
+.rf-vend-contact span { display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--rf-ink2); }
+.rf-vend-contact svg { flex-shrink:0; color:var(--rf-ink3); }
+
+.rf-vend-row-actions { display:flex; align-items:center; gap:4px; flex-shrink:0; }
+.rf-vend-icon-btn { display:flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:8px; border:none; background:transparent; color:var(--rf-ink3); cursor:pointer; transition:background 0.12s ease, color 0.12s ease; }
+.rf-vend-icon-btn:hover { background:var(--rf-accent-soft); color:var(--rf-accent); }
+.rf-vend-icon-btn.danger:hover { background:var(--rf-danger-soft); color:var(--rf-danger); }
+
+.rf-vend-form { margin-top:14px; padding-top:14px; border-top:1px solid var(--rf-line); }
+
+@media (max-width: 980px) {
+  .rf-mnt-grid { grid-template-columns:1fr; }
+  .rf-mnt-rail { order:2; }
+}
