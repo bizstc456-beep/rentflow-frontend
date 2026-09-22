@@ -26,6 +26,23 @@ function shortDate(value) {
   return new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+// The "Getting started" checklist's dismissal is a per-viewer convenience,
+// not data that needs to sync across devices or reappear for other
+// landlords -- localStorage is enough, and a bad/blocked store just means
+// the checklist shows again, never a broken page.
+function onboardingDismissKey(userId) {
+  return `rf_onboarding_dismissed_${userId}`;
+}
+
+function readOnboardingDismissed(userId) {
+  if (!userId) return false;
+  try {
+    return window.localStorage.getItem(onboardingDismissKey(userId)) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export default function LandlordDashboardPage() {
   const [summary, setSummary] = useState(null);
   const [properties, setProperties] = useState([]);
@@ -36,6 +53,8 @@ export default function LandlordDashboardPage() {
   const [leaseRenewals, setLeaseRenewals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [userId, setUserId] = useState(null);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
 
   useEffect(() => {
     loadDashboard();
@@ -51,6 +70,9 @@ export default function LandlordDashboardPage() {
 
       const headers = { Authorization: `Bearer ${session.access_token}` };
       const base = process.env.REACT_APP_BACKEND_URL;
+
+      setUserId(session.user.id);
+      setOnboardingDismissed(readOnboardingDismissed(session.user.id));
 
       const res = await fetch(`${base}/api/dashboard/${session.user.id}`, { headers });
       const data = await res.json();
@@ -129,10 +151,91 @@ export default function LandlordDashboardPage() {
     .filter((r) => r.status === 'in_window' || r.status === 'upcoming')
     .slice(0, 2);
 
+  // "Getting started" checklist -- driven by real data, not its own tracked
+  // state, so it never drifts from what the account has actually done.
+  // The payment step only sees this month's payments (the dashboard doesn't
+  // fetch full history), which is a fine trade-off for an onboarding aid
+  // aimed at brand-new accounts.
+  const onboardingSteps = [
+    {
+      key: 'property',
+      label: 'Add your first property',
+      done: properties.length > 0,
+      cta: 'Add property',
+      to: '/properties?new=1',
+    },
+    {
+      key: 'tenant',
+      label: 'Add your first tenant',
+      done: tenants.length > 0,
+      cta: 'Add tenant',
+      to: '/properties',
+    },
+    {
+      key: 'payment',
+      label: 'Record your first payment',
+      done: (summary.total_collected_this_month || 0) > 0,
+      cta: 'Record payment',
+      to: '/properties',
+    },
+  ];
+  const onboardingDoneCount = onboardingSteps.filter((s) => s.done).length;
+  const showOnboarding = onboardingDoneCount < onboardingSteps.length && !onboardingDismissed;
+
+  const dismissOnboarding = () => {
+    setOnboardingDismissed(true);
+    try {
+      window.localStorage.setItem(onboardingDismissKey(userId), '1');
+    } catch {
+      // Best-effort -- worst case the checklist reappears next visit.
+    }
+  };
+
   return (
     <div className="rf-dash">
       <div className="rf-dash-grid">
         <div className="rf-dash-main">
+          {showOnboarding && (
+            <div className="rf-onboarding rf-anim-in">
+              <div className="rf-onboarding-head">
+                <div className="rf-onboarding-title">
+                  <span>Getting started</span>
+                  <span className="rf-onboarding-progress">{onboardingDoneCount} of {onboardingSteps.length}</span>
+                </div>
+                <button
+                  type="button"
+                  className="rf-onboarding-close"
+                  onClick={dismissOnboarding}
+                  aria-label="Dismiss getting started checklist"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="rf-onboarding-steps">
+                {(() => {
+                  const firstIncompleteIndex = onboardingSteps.findIndex((s) => !s.done);
+                  return onboardingSteps.map((step, i) => {
+                    const isCurrent = i === firstIncompleteIndex;
+                    return (
+                      <div
+                        className={`rf-onboarding-step ${step.done ? 'done' : ''} ${isCurrent ? 'current' : ''}`}
+                        key={step.key}
+                      >
+                        <div className="rf-onboarding-step-left">
+                          <span className="rf-onboarding-check">{step.done ? '✓' : ''}</span>
+                          <span className="rf-onboarding-label">{step.label}</span>
+                        </div>
+                        {isCurrent && (
+                          <Link to={step.to} className="rf-onboarding-cta">{step.cta} &rarr;</Link>
+                        )}
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            </div>
+          )}
+
           <p className="rf-greet">Overview &middot; {monthLabel}</p>
 
           <div className="rf-hero">

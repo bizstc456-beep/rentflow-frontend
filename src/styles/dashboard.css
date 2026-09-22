@@ -1639,3 +1639,149 @@
     order: 2;
   }
 }
+
+/* ============================================
+   Dashboard "Getting started" onboarding checklist
+   ============================================ */
+
+.rf-onboarding {
+  background: var(--rf-card);
+  border: 1px solid var(--rf-line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.rf-onboarding-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.rf-onboarding-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rf-onboarding-title span:first-child {
+  font-family: "Bricolage Grotesque", "Outfit", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.rf-onboarding-progress {
+  background: var(--rf-accent-soft);
+  color: var(--rf-accent);
+  border-radius: 100px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rf-onboarding-close {
+  background: none;
+  border: none;
+  color: var(--rf-ink3, var(--rf-ink2));
+  font-size: 19px;
+  line-height: 1;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 6px;
+}
+
+.rf-onboarding-close:hover {
+  color: var(--rf-ink);
+  background: rgba(124, 58, 237, 0.06);
+}
+
+.rf-onboarding-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.rf-onboarding-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--rf-line);
+  flex-wrap: wrap;
+}
+
+.rf-onboarding-step:last-child {
+  border-bottom: none;
+}
+
+.rf-onboarding-step-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.rf-onboarding-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--rf-line);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #fff;
+}
+
+.rf-onboarding-step.done .rf-onboarding-check {
+  background: var(--rf-good);
+  border-color: var(--rf-good);
+}
+
+.rf-onboarding-step.current .rf-onboarding-check {
+  border-color: var(--rf-accent);
+}
+
+.rf-onboarding-label {
+  font-size: 13.5px;
+  color: var(--rf-ink2);
+}
+
+.rf-onboarding-step.current .rf-onboarding-label {
+  color: var(--rf-ink);
+  font-weight: 700;
+}
+
+.rf-onboarding-step.done .rf-onboarding-label {
+  text-decoration: line-through;
+}
+
+.rf-onboarding-cta {
+  background: var(--rf-gradient);
+  color: #fff;
+  border-radius: 9px;
+  padding: 7px 13px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rf-onboarding-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(124, 58, 237, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-onboarding-cta {
+    transition: none;
+  }
+  .rf-onboarding-cta:hover {
+    transform: none;
+  }
+}
